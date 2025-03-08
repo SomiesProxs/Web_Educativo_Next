@@ -5,7 +5,6 @@ import bcrypt from "bcryptjs";
 export async function POST(req: Request) {
   try {
     const { username, email, password, dni, phone } = await req.json();
-
     if (!username || !email || !password || !dni || !phone) {
       return NextResponse.json({ message: "Todos los campos son obligatorios" }, { status: 400 });
     }
@@ -15,18 +14,24 @@ export async function POST(req: Request) {
     const db = client.db(process.env.MONGODB_DB);
     const usersCollection = db.collection("users");
 
-    const existingUser = await usersCollection.findOne({ email });
-    if (existingUser) {
+    if (await usersCollection.findOne({ email })) {
       await client.close();
       return NextResponse.json({ message: "El usuario ya existe" }, { status: 400 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await usersCollection.insertOne({ username, email, password: hashedPassword, dni, phone, createdAt: new Date() });
+    await usersCollection.insertOne({
+      username,
+      email,
+      password: await bcrypt.hash(password, 10),
+      dni,
+      phone,
+      createdAt: new Date(),
+    });
 
     await client.close();
     return NextResponse.json({ message: "Usuario registrado correctamente" }, { status: 201 });
-  } catch (error) {
+
+  } catch {
     return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
   }
 }
