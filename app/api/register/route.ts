@@ -12,14 +12,14 @@ export async function POST(req: Request) {
     const client = new MongoClient(process.env.MONGODB_URI as string);
     await client.connect();
     const db = client.db(process.env.MONGODB_DB);
-    const usersCollection = db.collection("users");
+    const ClientesCollection = db.collection("Clientes");
 
-    if (await usersCollection.findOne({ email })) {
+    if (await ClientesCollection.findOne({ email })) {
       await client.close();
       return NextResponse.json({ message: "El usuario ya existe" }, { status: 400 });
     }
 
-    await usersCollection.insertOne({
+    await ClientesCollection.insertOne({
       username,
       email,
       password: await bcrypt.hash(password, 10),
