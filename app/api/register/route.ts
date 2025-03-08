@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import { MongoClient } from "mongodb";
 import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
@@ -10,32 +10,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Todos los campos son obligatorios" }, { status: 400 });
     }
 
-    const client = await clientPromise;
-    const dbName = process.env.MONGODB_DB;
-    if (!dbName) throw new Error("MONGODB_DB no está definido en .env");
-    
-    const db = client.db(dbName);
+    const client = new MongoClient(process.env.MONGODB_URI as string);
+    await client.connect();
+    const db = client.db(process.env.MONGODB_DB);
     const usersCollection = db.collection("users");
 
-    // Verificar si el usuario ya existe
     const existingUser = await usersCollection.findOne({ email });
     if (existingUser) {
+      await client.close();
       return NextResponse.json({ message: "El usuario ya existe" }, { status: 400 });
     }
 
-    // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
+    await usersCollection.insertOne({ username, email, password: hashedPassword, dni, phone, createdAt: new Date() });
 
-    // Guardar usuario en la base de datos
-    await usersCollection.insertOne({
-      username,
-      email,
-      password: hashedPassword,
-      dni,
-      phone,
-      createdAt: new Date(),
-    });
-
+    await client.close();
     return NextResponse.json({ message: "Usuario registrado correctamente" }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
