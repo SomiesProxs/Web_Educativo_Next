@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -28,11 +27,6 @@ const Portada: React.FC = () => {
     setUsername(null);
     router.push("/login");
   };
-
-
-
- // Estado para mostrar/ocultar el anuncio
- const [showAd, setShowAd] = useState<boolean>(false);
 
  // Estado para el menú desplegable
  const [menuVisible, setMenuVisible] = useState<boolean>(false);
