@@ -11,11 +11,13 @@ const Login = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
-      router.push("/"); // Si ya está logueado, redirigir a la portada
+    if (typeof window !== "undefined") {
+      const storedUsername = localStorage.getItem("username");
+      if (storedUsername) {
+        router.push("/");
+      }
     }
-  }, []);
+  }, [router]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

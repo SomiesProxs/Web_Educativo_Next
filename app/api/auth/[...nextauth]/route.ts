@@ -33,14 +33,14 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub ?? ""; // ✅ Asegura que `id` esté definido
-        session.user.email = token.email; // ✅ Añadir email a la sesión
+        session.user.id = token.sub ?? "";
+        session.user.email = token.email ?? "";
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.email = user.email; // ✅ Guardar el email en el token JWT
+        token.email = user.email ?? "";
       }
       return token;
     },
@@ -51,5 +51,4 @@ export const authOptions: AuthOptions = {
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };
