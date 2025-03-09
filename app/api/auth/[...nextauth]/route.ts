@@ -1,8 +1,8 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import clientPromise from "@/lib/mongodb";
 
-export const authOptions: AuthOptions = {
+const handler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -34,13 +34,13 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub ?? "";
-        session.user.email = token.email ?? "";
+        session.user.email = token.email;
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.email = user.email ?? "";
+        token.email = user.email;
       }
       return token;
     },
@@ -48,7 +48,6 @@ export const authOptions: AuthOptions = {
   pages: {
     signIn: "/login",
   },
-};
+});
 
-const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
