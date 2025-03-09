@@ -1,0 +1,162 @@
+
+.pieportada {
+    width: 100%;
+    height: auto;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.sub1pieportada {
+    width: 1920px;
+    background: #3a3a3a;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.infoportada, .enlacesportada, .redesportada {
+    width: 30%;
+}
+
+h3 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-bottom: 10px;
+    font-size: 38px;
+    font-weight: bold;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 5px;
+}
+
+ul li a {
+    color: white;
+    text-decoration: none;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+ul li a:hover {
+    text-decoration: underline;
+}
+
+.iconsportada a {
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.iconsportada img {
+    border-radius: 50%;
+    width: 54px;
+    height: 54px;
+    transition: transform 0.3s ease; /* Transición suave */
+}
+
+.iconsportada img:hover {
+    transform: scale(1.2); /* Aumenta el tamaño de la imagen al pasar el ratón */
+}
+.flechaportada {   
+    display: none;
+}
+.informacionportada{
+    
+    display: none;  /* Oculta todo el contenido dentro de <p className="mostrar"> */
+}
+/* CELULAR NORMAL */
+@media (min-width: 0px) and (max-width: 567px) {
+    .sub1pieportada {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        z-index: 10;
+    }
+
+    .infoportada, .enlacesportada, .redesportada {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    .iconsportada img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .iconsportada a {
+        margin-right: 5px;
+    }
+
+    /* Estilos para mostrar u ocultar el contenido */
+    .ocultarportada {
+        display: none;
+    }
+
+    .mostrarportada {
+        display: block;
+    }
+
+    .flechaportada {  
+        display: block;
+        background: transparent;
+        cursor: pointer;
+        color: #a0753a;
+        font-size: 30px;
+    }
+
+    /* Esconder "Categorías" y "Síguenos" fuera de "mostrar" en celular */
+    .enlacesportada, .redesportada {
+        display: none;
+    }
+
+    /* Mostrar solo las secciones dentro de "mostrar" */
+    .mostrarportada .enlacesportada, .mostrarportada .redesportada {
+        display: block;
+    }
+    .informacionportada{
+        display: block;  /* Oculta todo el contenido dentro de <p className="mostrar"> */
+    }
+}
+
+/*TABLET*/
+@media (min-width: 568px) and (max-width: 900px){
+    .sub1pieportada{
+        padding: 14px;
+    }
+    
+    h3 {
+        margin-bottom: 7px;
+        font-size: 30px;
+    }
+    
+    
+    ul li {
+        margin-bottom: 3px;
+    }
+
+    
+    .iconsportada a {
+        margin-right: 7px;
+    }
+    
+    .iconsportada img {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .iconsportada img:hover {
+        transform: scale(1.2); /* Aumenta el tamaño de la imagen al pasar el ratón */
+    }
+}
+  

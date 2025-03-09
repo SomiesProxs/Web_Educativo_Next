@@ -1,0 +1,272 @@
+
+/* cabecera.css */
+/*Cuerpo Total*/
+* {
+  padding: 0;
+  margin: 0;
+}
+.cabezaportada{
+width: 100%;
+height: auto;
+}
+
+/*Primer cuadro (cabeza1)*/  
+.subcabeza1portada {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  background: white;
+  justify-content: center;
+}
+
+/* General: sub1cabeza1 */
+.cuadro1cabeza1portada {
+  width: 1920px;
+  height: 100%;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Sección del logo */
+.logocuadro1cabeza1portada img{
+  width: 170px;
+  padding: 0 40px;
+}
+/*Seccion de la cuenta*/
+.cuentacuadro1cabeza1portada{
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+}
+
+.cuentacuadro1cabeza1portada img{
+  transform: translateX(-20px);
+  width: 50px;
+  height: auto;
+
+}
+.username-display{
+font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+color: white;
+font-size: 20px;
+}
+
+/*Cabeza2*/  
+.sub1cabeza2portada{
+  width: 100%;
+  height: 40px;
+  background: white;
+  display: flex;
+  justify-content: center;
+}
+
+.menusub1cabeza2portada{
+  width: 1920px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*seccion del texto*/
+.menusub1cabeza2portada{
+display: flex;
+background: #a0753a;
+}
+
+.menusub1cabeza2portada a{
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  padding: 0 40px;
+  font-size: 22px;
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+}
+.menusub1cabeza2portada a:hover{
+  text-decoration:underline;
+}
+/*el otro texto*/
+
+.nav-link {
+  color: white;         /* Cambia el color del texto a blanco */
+  font-size: 30px;      /* Establece el tamaño de la fuente */
+  font-weight: bold;    /* Hace el texto en negrita (grueso) */
+  font-family: "Pacifico", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.nav-link:hover {
+  color: white;
+}
+
+/*dentro del texto*/
+.dropdown-menu{
+  padding: 2px;
+  margin: 2px;
+  color: #3a3a3a;
+  background: #f4e1c1;
+  border: 2px solid #703e19;
+}
+.dropdown-menu :hover{
+  color: white;
+  background: #c07f3a
+}
+
+/* Hamburguesa */
+.hamburguesaportada {
+display: none;
+font-size: 24px;
+cursor: pointer;
+color: white;
+margin-right: 20px;
+}
+
+
+
+/*CELULAR NORMAL*/
+@media (min-width: 0px) and (max-width: 567px){
+
+/*Primer cuadro (cabeza1)*/  
+.cabeza1portada {
+  height: 60px;
+}
+/* General: sub1cabeza1 */
+.cuadro1cabeza1portada {
+  width: 100%;
+}
+/* Sección del logo */
+.logocuadro1cabeza1portada img{
+  width: 160px;
+  padding: 0 5px;
+}
+/*Seccion de la cuenta*/
+.cuentasub1cabeza1portada{
+  padding: 0 20px;
+}
+
+.cuentasub1cabeza1portada img{
+  transform: translateX(-10px);
+  width: 40px;
+}
+/*el otro texto*/
+.nav-link {
+  color: white;         /* Cambia el color del texto a blanco */
+  font-size: 23px;      /* Establece el tamaño de la fuente */
+  font-weight: bold;    /* Hace el texto en negrita (grueso) */
+  font-family: "Pacifico", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.nav-link:hover {
+  color: white;
+}
+/*Cabeza2*/ 
+.sub1cabeza2portada {
+border: none;
+height: 40px;
+background: #a0753a;
+justify-content: flex-start;
+}
+.sub1cabeza2portada {
+  width: 100%;
+}
+
+.hamburguesaportada {
+transform: translateX(25px);
+display: block;
+}
+
+/* Menú desplegable */
+.menusub1cabeza2portada {
+flex-direction: column;
+align-items: flex-start;
+position: absolute;
+right: 0;
+background: #a0753a;
+width: 200px;
+padding: 10px;
+transform: translateX(100);
+opacity: 0;
+transition: transform 0.5s ease, opacity 0.5s ease;
+z-index: 10;
+}
+
+/* Cuando el menú es visible */
+.menusub1cabeza2portada.visible {
+transform: translateX(0);
+opacity: 1;
+}
+
+
+
+}
+
+/* Tablet*/
+@media (min-width: 568px) and (max-width: 900px){
+/*Primer cuadro (cabeza1)*/  
+  .cabeza1portada {
+    height: 100px;
+  }
+/* Sección del logo */
+  .logosub1cabeza1portada img{
+    width: 260px;
+    padding: 0 30px;
+  }
+/*Seccion de la cuenta*/
+  .cuentasub1cabeza1portada{
+    padding: 0 30px;
+  }
+  .cuentasub1cabeza1portada a{
+    font-size: 30px;
+
+  }
+  .cuentasub1cabeza1portada img{
+    transform: translateX(-10px);
+    width: 50px;
+  }
+
+  
+/*Cabeza2*/ 
+.sub1cabeza2portada {
+  border: none;
+  height: 60px;
+  justify-content:flex-start;
+  background: #a0753a;
+}
+
+.hamburguesaportada {
+  transform: translateX(25px);
+  display: block;
+  font-size:220%;
+}
+
+/* Menú desplegable */
+.menusub1cabeza2portada {
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  right: 0;
+  background: #a0753a;
+  width: 300px;
+  padding: 20px;
+  transform: translateX(100);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  z-index: 10;
+}
+
+/* Cuando el menú es visible */
+.menusub1cabeza2portada.visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.menusub1cabeza2portada a {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  padding: 10px 0;
+  font-size: 22px;
+  text-align: left;
+}
+
+}
