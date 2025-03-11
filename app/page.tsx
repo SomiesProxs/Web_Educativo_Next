@@ -73,19 +73,19 @@ const Portada: React.FC = () => {
 
            <section className="cuentacuadro1cabeza1portada">
            <nav>
-        {username ? (
-          <div className="flex items-center">
-            <span className="mr-4">Bienvenido, {username}</span>
-            <button onClick={handleLogout} className="bg-red-500 px-4 py-2 rounded">
-              Cerrar sesión
-            </button>
-          </div>
-        ) : (
-          <a href="/login" className="bg-green-500 px-4 py-2 rounded">
-            Iniciar sesión
-          </a>
-        )}
-      </nav>
+           {username ? (
+        <div className="flex items-center gap-4">
+          <span>Bienvenido, {username}</span>
+          <button onClick={handleLogout} className="bg-red-500 px-4 py-2 rounded">
+            Cerrar sesión
+          </button>
+        </div>
+          ) : (
+            <a href="/register" className="bg-green-500 px-4 py-2 rounded">
+              Iniciar sesión
+            </a>
+          )}
+          </nav>
            </section>
             
 

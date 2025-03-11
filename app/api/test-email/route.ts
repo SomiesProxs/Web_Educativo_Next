@@ -13,7 +13,7 @@ export async function GET() {
 
     const info = await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: "tu-email@gmail.com",
+      to: "smisaproxsgmail.com",
       subject: "Prueba desde Vercel",
       text: "Esto es una prueba para ver si el correo funciona en producción.",
     });
