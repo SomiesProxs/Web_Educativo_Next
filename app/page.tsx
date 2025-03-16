@@ -112,15 +112,18 @@ useEffect(() => {
   className="user-circle cursor-pointer w-12 h-12 bg-[#A0753A] rounded-full flex items-center justify-center text-white text-lg overflow-hidden border-2 border-[#A0753A]"
   onClick={() => setShowMenu(!showMenu)}
 >
-  {profileImage ? (
-    <Image  
-      src={profileImage} 
-      alt="Foto de perfil" 
-      className="w-full h-full object-cover rounded-full"
-    />
-  ) : (
-    (session.user.name || "").charAt(0).toUpperCase()
-  )}
+{profileImage ? (
+  <Image  
+    src={profileImage} 
+    alt="Foto de perfil" 
+    width={40}  // ✅ Ajusta el tamaño según necesites
+    height={40} // ✅ Ajusta el tamaño según necesites
+    className="w-full h-full object-cover rounded-full"
+  />
+) : (
+  (session.user.name || "").charAt(0).toUpperCase()
+)}
+
 </div>
 
           {/* 📌 Dropdown Menu */}

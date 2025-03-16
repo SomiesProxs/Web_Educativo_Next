@@ -256,19 +256,26 @@ const handleClick = () => {
     onMouseLeave={() => setIsHovered(false)}
     onClick={handleClick} // 📌 Al hacer clic, abre el selector de imágenes
   >
-    {image ? (
-      <Image src={image} alt="Foto de perfil" className="w-full h-full object-cover rounded-full" />
-    ) : (
-      <motion.div 
-        key={isHovered ? "pencil" : "user"}
-        initial={{ opacity: 0, scale: 0.8 }} 
-        animate={{ opacity: 1, scale: 1 }} 
-        exit={{ opacity: 0, scale: 0.8 }} 
-        transition={{ duration: 0.2 }}
-      >
-        {isHovered ? <Pencil size={40} color="#A0753A" /> : <User size={40} color="#A0753A" />}
-      </motion.div>
-    )}
+{image ? (
+  <Image 
+    src={image} 
+    alt="Foto de perfil" 
+    width={80}  // ✅ Ajusta según necesites
+    height={80} // ✅ Ajusta según necesites
+    className="w-full h-full object-cover rounded-full"
+  />
+) : (
+  <motion.div 
+    key={isHovered ? "pencil" : "user"}
+    initial={{ opacity: 0, scale: 0.8 }} 
+    animate={{ opacity: 1, scale: 1 }} 
+    exit={{ opacity: 0, scale: 0.8 }} 
+    transition={{ duration: 0.2 }}
+  >
+    {isHovered ? <Pencil size={40} color="#A0753A" /> : <User size={40} color="#A0753A" />}
+  </motion.div>
+)}
+
   </motion.div>
 
   {/* 🖼️ Input oculto para seleccionar imagen */}
