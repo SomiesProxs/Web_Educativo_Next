@@ -1,5 +1,4 @@
           "use client";
-
           import { useState, useEffect } from "react";
           import { useSession } from "next-auth/react";
           import { useRouter } from "next/navigation";
@@ -8,7 +7,7 @@
           import "./dashboard.css";
 
           const Dashboard = () => {
-            const { data: session } = useSession();
+            const { data: session, update } = useSession(); // Importar update
             const router = useRouter();
             const [selectedSection, setSelectedSection] = useState<string>("ajustes");
             const [username, setUsername] = useState<string>(session?.user?.name || "");
@@ -22,6 +21,7 @@
             const [isFormValid, setIsFormValid] = useState<boolean>(false);
             const [isFormComplete, setIsFormComplete] = useState<boolean>(false); // eslint-disable-line @typescript-eslint/no-unused-vars
             const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+            const [showModal, setShowModal] = useState(false);
 
             // Al recargar, aseguramos que se mantenga en "Ajustes de la cuenta"
             useEffect(() => {
@@ -54,12 +54,16 @@
               setValidPhone(isValid);
             };
 
-            // Manejar cambios en los campos
             const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               const newName = e.target.value;
-              setUsername(newName);
-              validateName(newName);
+            
+              // Solo permite letras y espacios, y recorta si supera los 10 caracteres
+              if (/^[a-zA-Z\s]*$/.test(newName) && newName.length <= 25) {
+                setUsername(newName);
+                validateName(newName);
+              }
             };
+            
 
             const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               const newPhone = e.target.value;
@@ -68,9 +72,8 @@
             };
 
             const handleUpdate = async () => {
-              // Verificar si todos los campos son válidos
               if (!isFormValid) return;
-
+            
               try {
                 const response = await fetch("/api/updateProfile", {
                   method: "POST",
@@ -84,21 +87,35 @@
                   }),
                 });
             
-                if (response.ok) {
-                  setFormSubmitted(true);
-                  alert("Datos actualizados correctamente");
-                  
-                  // Después de 2 segundos, volver a colores normales
-                  setTimeout(() => {
-                    setFormSubmitted(false);
-                  }, 2000);
-                } else {
-                  alert("Error al actualizar los datos");
+                if (!response.ok) {
+                  throw new Error("Error al actualizar los datos");
                 }
+            
+                setFormSubmitted(true);
+                setShowModal(true); // Mostrar el modal
+            
+                // 🔄 Actualizar sesión
+                await update({
+                  user: {
+                    ...session?.user,
+                    name: username,
+                    phone,
+                    birthDate,
+                    gender,
+                  },
+                });
+            
+                // Cerrar modal después de 2 segundos
+                setTimeout(() => {
+                  setFormSubmitted(false);
+                  setShowModal(false);
+                }, 2000);
               } catch (error) {
-                console.error("Error al actualizar:", error);
+                console.error("❌ Error al actualizar:", error);
               }
             };
+            
+            
 
             // Determinar el color del texto para los campos - asegurar que devuelve un string
             const getTextColorClass = (isValid: boolean): string => {
@@ -288,6 +305,23 @@
               </div>
             </motion.div>
           )}
+{showModal && (
+  <motion.div 
+    initial={{ opacity: 0, scale: 0.8 }} 
+    animate={{ opacity: 1, scale: 1 }} 
+    exit={{ opacity: 0, scale: 0.8 }} 
+    transition={{ duration: 0.3 }}
+    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4"
+  >
+    <div className="bg-black p-6 rounded-2xl shadow-lg flex flex-col items-center gap-3 w-full max-w-sm">
+      <User className="w-12 h-12 text-[#A0753A]" />
+      <h2 className="text-xl font-semibold text-white text-center">¡Datos Actualizados!</h2>
+      <p className="text-sm text-[#A0753A] text-center">Tu perfil ha sido actualizado correctamente.</p>
+    </div>
+  </motion.div>
+)}
+
+
 
           {selectedSection === "credito" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
