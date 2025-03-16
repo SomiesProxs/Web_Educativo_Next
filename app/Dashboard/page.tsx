@@ -1,9 +1,9 @@
           "use client";
-          import { useState, useEffect } from "react";
+          import { useState, useEffect, useRef } from "react";
           import { useSession } from "next-auth/react";
           import { useRouter } from "next/navigation";
           import { motion } from "framer-motion";
-          import { User, CreditCard, ClipboardList } from "lucide-react";
+          import { User, CreditCard, ClipboardList, Pencil } from "lucide-react";
           import "./dashboard.css";
 
           const Dashboard = () => {
@@ -22,6 +22,95 @@
             const [isFormComplete, setIsFormComplete] = useState<boolean>(false); // eslint-disable-line @typescript-eslint/no-unused-vars
             const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
             const [showModal, setShowModal] = useState(false);
+            const [profileImage, setProfileImage] = useState(session?.user?.image || "");
+
+
+              const [isHovered, setIsHovered] = useState(false);
+  const [image, setImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // ✅ Abrir la galería o archivos al hacer clic en el círculo
+  const handleClick = () => {
+    fileInputRef.current?.click(); // ✅ Abrir el selector de imágenes al hacer clic
+  };
+
+  const updateProfileImage = async (imageUrl: string) => {
+    try {
+      const response = await fetch("/api/updateProfile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: session?.user?.email, // 📌 Identifica al usuario
+          image: imageUrl, // 📌 Enviar la URL de la imagen
+        }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        console.log("✅ Imagen actualizada correctamente en MongoDB");
+      } else {
+        console.error("❌ Error al actualizar la imagen:", data.error);
+      }
+    } catch (error) {
+      console.error("❌ Error en la petición:", error);
+    }
+  };
+  
+  
+
+
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "Somiesproxs"); // ✅ Asegurar el preset correcto
+  
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (data.secure_url) {
+        setImage(data.secure_url); // ✅ Guarda la imagen en el estado
+        await updateProfileImage(data.secure_url); // ✅ Guarda la URL en MongoDB
+      } else {
+        console.error("❌ Error al subir la imagen:", data);
+      }
+    } catch (error) {
+      console.error("❌ Error al subir la imagen:", error);
+    }
+  };
+  
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await fetch(`/api/getUser?email=${session?.user?.email}`);
+        const data = await response.json();
+  
+        if (response.ok && data.image) {
+          setImage(data.image); // ✅ Cargar la imagen desde la base de datos
+        }
+      } catch (error) {
+        console.error("❌ Error al obtener la imagen:", error);
+      }
+    };
+  
+    if (session?.user?.email) {
+      fetchProfileImage();
+    }
+  }, [session?.user?.email]);
+  
+  
+    
+  
 
             // Al recargar, aseguramos que se mantenga en "Ajustes de la cuenta"
             useEffect(() => {
@@ -155,9 +244,49 @@
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.7 }}
         >
-          <motion.div className="w-20 h-20 bg-black rounded-full flex items-center justify-center">
-            <User size={40} color="#A0753A" />
-          </motion.div>
+
+
+
+
+<div className="relative">
+  {/* 🔥 Círculo con animación y selector de imagen */}
+  <motion.div 
+    className="w-20 h-20 bg-black rounded-full flex items-center justify-center cursor-pointer overflow-hidden"
+    onMouseEnter={() => setIsHovered(true)} 
+    onMouseLeave={() => setIsHovered(false)}
+    onClick={handleClick} // 📌 Al hacer clic, abre el selector de imágenes
+  >
+    {image ? (
+      <img src={image} alt="Foto de perfil" className="w-full h-full object-cover rounded-full" />
+    ) : (
+      <motion.div 
+        key={isHovered ? "pencil" : "user"}
+        initial={{ opacity: 0, scale: 0.8 }} 
+        animate={{ opacity: 1, scale: 1 }} 
+        exit={{ opacity: 0, scale: 0.8 }} 
+        transition={{ duration: 0.2 }}
+      >
+        {isHovered ? <Pencil size={40} color="#A0753A" /> : <User size={40} color="#A0753A" />}
+      </motion.div>
+    )}
+  </motion.div>
+
+  {/* 🖼️ Input oculto para seleccionar imagen */}
+  <input 
+    type="file" 
+    accept="image/*" 
+    className="hidden"
+    ref={fileInputRef} 
+    onChange={handleImageChange} 
+    title="Selecciona una imagen de perfil" // ✅ Agregamos un título accesible
+    aria-label="Selecciona una imagen de perfil"
+  />
+</div>
+
+
+
+
+    
           <span className="mt-4 text-lg font-bold text-black">{session?.user?.name || "Usuario"}</span>
 
           <div className="mt-6 w-full flex flex-col gap-3">

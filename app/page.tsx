@@ -16,6 +16,26 @@ const Portada: React.FC = () => {
 const { data: session, status } = useSession();  
 const [showMenu, setShowMenu] = useState(false);
 const router = useRouter();
+const [profileImage, setProfileImage] = useState<string | null>(null);
+
+useEffect(() => {
+  const fetchProfileImage = async () => {
+    if (!session?.user?.email) return;
+
+    try {
+      const response = await fetch(`/api/getUser?email=${session.user.email}`);
+      const data = await response.json();
+
+      if (response.ok && data.image) {
+        setProfileImage(data.image); // ✅ Guardar imagen en el estado
+      }
+    } catch (error) {
+      console.error("❌ Error al obtener la imagen de perfil:", error);
+    }
+  };
+
+  fetchProfileImage();
+}, [session?.user?.email]);
 
 useEffect(() => {
   const fetchSession = async () => {
@@ -78,52 +98,60 @@ const handleLogout = async () => {
 
 
            <div className="header flex items-center justify-between px-4 py-2 bg-black">
-  {status === "loading" ? ( 
-    <p className="text-white">Cargando...</p>
-  ) : session?.user ? ( 
-    <div className="relative flex items-center">
-      {/* 📌 Mostrar el nombre SOLO en pantallas grandes si tiene <= 6 letras */}
-      {(session.user.name || "").length <= 100 && (
-        <span 
-          className="text-white mr-2 hidden sm:inline-block truncate max-w-[150px]" 
-          title={session.user.name || ""}
-        >
-          {session.user.name || ""}
-        </span>
-      )}
+      {status === "loading" ? ( 
+        <p className="text-white">Cargando...</p>
+      ) : session?.user ? ( 
+        <div className="relative flex items-center">
+          {/* 📌 Mostrar el nombre SOLO en pantallas grandes si tiene <= 6 letras */}
+          {(session.user.name || "").length <= 100 && (
+            <span 
+              className="text-white mr-2 hidden sm:inline-block truncate max-w-[150px]" 
+              title={session.user.name || ""}
+            >
+              {session.user.name || ""}
+            </span>
+          )}
 
-      {/* ✅ Ícono del usuario (SIEMPRE VISIBLE) */}
-      <div 
-        className="user-circle cursor-pointer w-10 h-10 bg-[#A0753A] rounded-full flex items-center justify-center text-white text-lg"
-        onClick={() => setShowMenu(!showMenu)}
-      >
-        {(session.user.name || "").charAt(0).toUpperCase()} 
-      </div>
-
-      {/* 📌 Dropdown Menu */}
-      {showMenu && (
-        <div className="dropdown-menu absolute right-0 mt-2 w-40 bg-[#1E1E1E] rounded-lg shadow-lg p-2 flex flex-col border border-[#A0753A]">
-          <button 
-            onClick={() => router.push("/Dashboard")}
-            className="text-white text-left py-2 px-3 hover:bg-[#A0753A] rounded transition"
-          >
-            Ver perfil
-          </button>
-          <button 
-            onClick={handleLogout} 
-            className="text-red-400 text-left py-2 px-3 hover:bg-red-600 hover:text-white rounded transition"
-          >
-            Cerrar sesión
-          </button>
-        </div>
-      )}
-    </div>
+          {/* ✅ Mostrar imagen de perfil si existe, sino mostrar la inicial */}
+<div 
+  className="user-circle cursor-pointer w-12 h-12 bg-[#A0753A] rounded-full flex items-center justify-center text-white text-lg overflow-hidden border-2 border-[#A0753A]"
+  onClick={() => setShowMenu(!showMenu)}
+>
+  {profileImage ? (
+    <img 
+      src={profileImage} 
+      alt="Foto de perfil" 
+      className="w-full h-full object-cover rounded-full"
+    />
   ) : (
-    <a href="/login" className="bg-[#A0753A] text-white px-4 py-2 rounded">
-      Iniciar sesión
-    </a>
+    (session.user.name || "").charAt(0).toUpperCase()
   )}
 </div>
+
+          {/* 📌 Dropdown Menu */}
+          {showMenu && (
+            <div className="dropdown-menu absolute right-0 mt-2 w-40 bg-[#1E1E1E] rounded-lg shadow-lg p-2 flex flex-col border border-[#A0753A]">
+              <button 
+                onClick={() => router.push("/Dashboard")}
+                className="text-white text-left py-2 px-3 hover:bg-[#A0753A] rounded transition"
+              >
+                Ver perfil
+              </button>
+              <button 
+                onClick={() => signOut()} 
+                className="text-red-400 text-left py-2 px-3 hover:bg-red-600 hover:text-white rounded transition"
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <a href="/login" className="bg-[#A0753A] text-white px-4 py-2 rounded">
+          Iniciar sesión
+        </a>
+      )}
+    </div>
 
 
 

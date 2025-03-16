@@ -41,12 +41,6 @@ height: auto;
   align-items: center;
 }
 
-.cuentacuadro1cabeza1portada img{
-  transform: translateX(-20px);
-  width: 50px;
-  height: auto;
-
-}
 .username-display{
 font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 color: white;
