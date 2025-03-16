@@ -3,6 +3,7 @@
           import { useSession } from "next-auth/react";
           import { useRouter } from "next/navigation";
           import { motion } from "framer-motion";
+          import Image from 'next/image';
           import { User, CreditCard, ClipboardList, Pencil } from "lucide-react";
           import "./dashboard.css";
 
@@ -22,7 +23,6 @@
             const [isFormComplete, setIsFormComplete] = useState<boolean>(false); // eslint-disable-line @typescript-eslint/no-unused-vars
             const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
             const [showModal, setShowModal] = useState(false);
-            const [profileImage, setProfileImage] = useState(session?.user?.image || "");
 
 
               const [isHovered, setIsHovered] = useState(false);
@@ -30,9 +30,9 @@
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ✅ Abrir la galería o archivos al hacer clic en el círculo
-  const handleClick = () => {
-    fileInputRef.current?.click(); // ✅ Abrir el selector de imágenes al hacer clic
-  };
+const handleClick = () => {
+  fileInputRef.current?.click(); // ✅ Abrir el selector de imágenes al hacer clic
+};
 
   const updateProfileImage = async (imageUrl: string) => {
     try {
@@ -257,7 +257,7 @@
     onClick={handleClick} // 📌 Al hacer clic, abre el selector de imágenes
   >
     {image ? (
-      <img src={image} alt="Foto de perfil" className="w-full h-full object-cover rounded-full" />
+      <Image src={image} alt="Foto de perfil" className="w-full h-full object-cover rounded-full" />
     ) : (
       <motion.div 
         key={isHovered ? "pencil" : "user"}

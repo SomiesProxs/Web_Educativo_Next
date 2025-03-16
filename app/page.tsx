@@ -46,11 +46,6 @@ useEffect(() => {
   fetchSession();
 }, []);
 
-const handleLogout = async () => {
-  await signOut();
-  router.push("/login");
-};
-
  // Estado para el menú desplegable
  const [menuVisible, setMenuVisible] = useState<boolean>(false);
 
@@ -118,7 +113,7 @@ const handleLogout = async () => {
   onClick={() => setShowMenu(!showMenu)}
 >
   {profileImage ? (
-    <img 
+    <Image  
       src={profileImage} 
       alt="Foto de perfil" 
       className="w-full h-full object-cover rounded-full"
