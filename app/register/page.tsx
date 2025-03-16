@@ -5,7 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
-
+import { useCallback } from 'react';
 
 import "./register.css";
 
@@ -17,15 +17,8 @@ const Register = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    // Verificamos que session y session.user no sean null/undefined
-    if (session?.user?.email && !isRedirecting) {
-      checkIfUserExists(session.user.email);
-    }
-  }, [session, isRedirecting]);
-
-  // Función para verificar si el usuario ya existe
-  const checkIfUserExists = async (email: string) => {
+  // Memoizamos checkIfUserExists para evitar recreaciones y bucles infinitos
+  const checkIfUserExists = useCallback(async (email: string) => {
     try {
       setLoading(true);
       const response = await fetch("/api/check-user", {
@@ -63,21 +56,28 @@ const Register = () => {
           router.push("/");
         }, 2000);
       }
-    } catch (error) {
-      console.error("Error al verificar usuario:", error);
+    } catch (err) {
+      console.error("Error al verificar usuario:", err);
       setModalMessage("Ocurrió un error. Por favor intenta de nuevo.");
       setShowModal(true);
     } finally {
       setLoading(false);
     }
-  };
+  }, [router, session]); // Incluimos las dependencias necesarias
+
+  useEffect(() => {
+    // Verificamos que session y session.user no sean null/undefined
+    if (session?.user?.email && !isRedirecting) {
+      checkIfUserExists(session.user.email);
+    }
+  }, [session, isRedirecting, checkIfUserExists]); // Incluimos checkIfUserExists aquí
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
       await signIn("google", { redirect: false });
-    } catch (error) {
-      console.error("Error al iniciar sesión con Google:", error);
+    } catch (err) {
+      console.error("Error al iniciar sesión con Google:", err);
       setLoading(false);
     }
   };

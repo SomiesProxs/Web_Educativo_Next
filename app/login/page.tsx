@@ -46,7 +46,7 @@ try {
   let data;
   try {
     data = await res.json();
-  } catch (jsonError) {
+  } catch (_) {
     throw new Error("Formato de respuesta inválido");
   }
   
@@ -117,9 +117,9 @@ try {
   console.error("Error durante la verificación:", error);
   setErrorMsg("Error durante la verificación del código");
 }
-    } catch (error) {
-      setErrorMsg("Error de conexión. Intenta nuevamente.");
-    } finally {
+} catch (_) {
+  setErrorMsg("Error durante la verificación del código");
+} finally {
       setLoading(false);
     }
   };
