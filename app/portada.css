@@ -40,15 +40,10 @@
     overflow: hidden;
     animation: fondo 3.0s ease forwards; 
 }
-.espaciosub1cuerpoportada{
-    background: red;
-    width: 100px;
-    width: 100px;
-}
 /* Cuadro de texto */
 .cuadro1sub1cuerpoportada {
-    width: 600px;
-    padding: 220px;
+    width: 850px;
+    padding: 2px;
     background: transparent;
     color: white;
     display: flex;
@@ -70,8 +65,9 @@
 }
 
 /* Párrafo */
+
 .cuadro1sub1cuerpoportada p {
-    
+        
     font-size: 25px;
     line-height: 1.5;
     color: #f0f0f0;

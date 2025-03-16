@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useSession, signOut } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
 import Image from 'next/image';
 
 // You'll need to move these CSS imports to a proper place in Next.js
@@ -12,21 +13,23 @@ import './portada.css';
 import './pie.css';
 
 const Portada: React.FC = () => {
-  const [username, setUsername] = useState<string | null>(null);
-  const router = useRouter();
+const { data: session, status } = useSession();  
+const [showMenu, setShowMenu] = useState(false);
+const router = useRouter();
 
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("username");
-    setUsername(null);
-    router.push("/login");
+useEffect(() => {
+  const fetchSession = async () => {
+    const session = await getSession();
+    // Podrías hacer algo con la sesión aquí si es necesario
+    console.log("Sesión actualizada:", session);
   };
+  fetchSession();
+}, []);
+
+const handleLogout = async () => {
+  await signOut();
+  router.push("/login");
+};
 
  // Estado para el menú desplegable
  const [menuVisible, setMenuVisible] = useState<boolean>(false);
@@ -72,20 +75,38 @@ const Portada: React.FC = () => {
            </div>
 
            <section className="cuentacuadro1cabeza1portada">
-           <nav>
-           {username ? (
-        <div className="flex items-center gap-4">
-          <span>Bienvenido, {username}</span>
-          <button onClick={handleLogout} className="bg-red-500 px-4 py-2 rounded">
-            Cerrar sesión
-          </button>
-        </div>
-          ) : (
-            <a href="/register" className="bg-green-500 px-4 py-2 rounded">
-              Iniciar sesión
-            </a>
+
+
+           <div className="header">
+      {status === "loading" ? ( // ⏳ Mientras carga, muestra un loader
+        <p>Cargando...</p>
+      ) : session?.user ? ( // ✅ SI EL USUARIO ESTÁ INICIADO
+        <div className="user-info">
+          <span>{session.user.name}</span> {/* ✅ Muestra el nombre correctamente */}
+          <div 
+            className="user-circle"
+            onClick={() => setShowMenu(!showMenu)}
+          ></div>
+
+          {showMenu && (
+            <div className="dropdown-menu">
+              <button onClick={() => router.push("/Dashboard")}>Ver perfil</button>
+              <button onClick={handleLogout}>Cerrar sesión</button>
+            </div>
           )}
-          </nav>
+        </div>
+      ) : (
+        <a href="/login" className="bg-green-500 px-4 py-2 rounded">
+          Iniciar sesión
+        </a>
+      )}
+    </div>
+
+
+
+
+
+
            </section>
             
 
@@ -101,11 +122,11 @@ const Portada: React.FC = () => {
 
            {/* Menú desplegable */}
            <div className={`menusub1cabeza2portada ${menuVisible ? 'visible' : ''}`}>
-             <Link href="/inicial">Inicial</Link>
-             <Link href="/primaria">Primaria</Link>
-             <Link href="/secundaria">Secundaria</Link>
-             <Link href="/ingles">Ingles</Link>
-             <Link href="/programacion">Programación</Link>
+             <a href="/inicial">Inicial</a>
+             <a href="/primaria">Primaria</a>
+             <a href="/secundaria">Secundaria</a>
+             <a href="/ingles">Ingles</a>
+             <a href="/programacion">Programación</a>
            </div>
          </section>
        </section>
