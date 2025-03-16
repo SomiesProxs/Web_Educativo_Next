@@ -20,7 +20,7 @@
             const [validName, setValidName] = useState<boolean>(true);
             const [validPhone, setValidPhone] = useState<boolean>(true);
             const [isFormValid, setIsFormValid] = useState<boolean>(false);
-            const [isFormComplete, setIsFormComplete] = useState<boolean>(false);
+            const [isFormComplete, setIsFormComplete] = useState<boolean>(false); // eslint-disable-line @typescript-eslint/no-unused-vars
             const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
             // Al recargar, aseguramos que se mantenga en "Ajustes de la cuenta"
