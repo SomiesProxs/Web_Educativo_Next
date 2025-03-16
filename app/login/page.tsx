@@ -32,35 +32,35 @@ export default function Login() {
 
     setLoading(true);
     setErrorMsg("");
-    
-// Primer bloque: Envío de código de verificación
-try {
-  setLoading(true);
-  const res = await fetch("/api/login", {
-    method: "POST",
-    body: JSON.stringify({ email }),
-    headers: { "Content-Type": "application/json" },
-  });
-  
-  // Manejo de error si la respuesta no es JSON válido
-  let data;
-  try {
-    data = await res.json();
-  } catch (_) {
-    throw new Error("Formato de respuesta inválido");
-  }
-  
-  if (res.ok) {
-    setStep(2);
-  } else {
-    setErrorMsg(data.message || "Error al enviar código");
-  }
-} catch (error) {
-  console.error("Error durante el login:", error);
-  setErrorMsg("Error de conexión. Intenta nuevamente.");
-} finally {
-  setLoading(false);
-}
+
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      // Manejo de error si la respuesta no es JSON válido
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        // Sin variable de captura para evitar errores de ESLint
+        throw new Error("Formato de respuesta inválido");
+      }
+
+      if (res.ok) {
+        setStep(2);
+      } else {
+        setErrorMsg(data.message || "Error al enviar código");
+      }
+    } catch (err) {
+      // Cambiamos de 'error' a 'err' para evitar conflictos con ESLint
+      console.error("Error durante el login:", err);
+      setErrorMsg("Error de conexión. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const verifyCode = async () => {
@@ -71,7 +71,7 @@ try {
 
     setLoading(true);
     setErrorMsg("");
-    
+
     try {
       const res = await fetch("/api/verify", {
         method: "POST",
@@ -81,45 +81,40 @@ try {
 
       const data = await res.json();
 
-// Segundo bloque: Verificación de código y inicio de sesión
-try {
-  if (res.ok) {
-    setShowModal(true);
-    
-    // Usar setTimeout con promesa para mejor manejo de errores
-    setTimeout(async () => {
-      try {
-        setShowModal(false);
-        // Usar el proveedor de credenciales con el email verificado
-        const result = await signIn("credentials", {
-          email,
-          verified: "true",
-          redirect: false,
-          callbackUrl: "/"
-        });
-        
-        if (result?.error) {
-          setErrorMsg("Error al iniciar sesión: " + result.error);
-        } else if (result?.ok) {
-          router.push("/");
-        } else {
-          throw new Error("Respuesta de autenticación inválida");
-        }
-      } catch (timeoutError) {
-        console.error("Error durante el proceso de autenticación:", timeoutError);
-        setErrorMsg("Error durante el proceso de inicio de sesión");
+      if (res.ok) {
+        setShowModal(true);
+
+        // Usar setTimeout con promesa para mejor manejo de errores
+        setTimeout(async () => {
+          try {
+            setShowModal(false);
+            // Usar el proveedor de credenciales con el email verificado
+            const result = await signIn("credentials", {
+              email,
+              verified: "true",
+              redirect: false,
+              callbackUrl: "/"
+            });
+
+            if (result?.error) {
+              setErrorMsg("Error al iniciar sesión: " + result.error);
+            } else if (result?.ok) {
+              router.push("/");
+            } else {
+              throw new Error("Respuesta de autenticación inválida");
+            }
+          } catch (err) {
+            console.error("Error durante el proceso de autenticación:", err);
+            setErrorMsg("Error durante el proceso de inicio de sesión");
+          }
+        }, 2000);
+      } else {
+        setErrorMsg(data.message || "Código incorrecto o expirado");
       }
-    }, 2000);
-  } else {
-    setErrorMsg(data.message || "Código incorrecto o expirado");
-  }
-} catch (error) {
-  console.error("Error durante la verificación:", error);
-  setErrorMsg("Error durante la verificación del código");
-}
-} catch (_) {
-  setErrorMsg("Error durante la verificación del código");
-} finally {
+    } catch {
+      // Sin variable de captura para evitar errores de ESLint
+      setErrorMsg("Error durante la verificación del código");
+    } finally {
       setLoading(false);
     }
   };
