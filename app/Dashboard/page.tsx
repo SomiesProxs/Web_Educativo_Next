@@ -88,9 +88,6 @@
                   setFormSubmitted(true);
                   alert("Datos actualizados correctamente");
                   
-                  // Refrescar sesión para reflejar cambios
-                  const updatedSession = await fetch("/api/auth/session").then((res) => res.json());
-                  
                   // Después de 2 segundos, volver a colores normales
                   setTimeout(() => {
                     setFormSubmitted(false);
