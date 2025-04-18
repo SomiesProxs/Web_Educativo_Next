@@ -25,9 +25,9 @@
             const [showModal, setShowModal] = useState(false);
 
 
-              const [isHovered, setIsHovered] = useState(false);
-  const [image, setImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+            const [isHovered, setIsHovered] = useState(false);
+            const [image, setImage] = useState<string | null>(null);
+            const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ✅ Abrir la galería o archivos al hacer clic en el círculo
 const handleClick = () => {
@@ -212,6 +212,8 @@ const handleClick = () => {
               return isValid ? "text-green-400" : "text-red-400";
             };
 
+
+            
             return (
               <div className="min-h-screen bg-[#1b1f38] text-white flex flex-col items-center p-6">
       {/* Header */}
@@ -459,12 +461,34 @@ const handleClick = () => {
 
 
 
-          {selectedSection === "credito" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
-              <h2 className="text-xl font-bold text-black">Crédito</h2>
-              <p className="mt-2 text-black">Aquí se mostrarán los créditos disponibles.</p>
-            </motion.div>
-          )}
+{selectedSection === "credito" && (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.6 }}
+    className="flex flex-col items-center justify-center mt-6 space-y-6"
+  >
+    <h2 className="text-4xl font-bold text-black">Información de tu cuenta</h2> 
+
+    <div className="flex items-center justify-center space-x-6">
+      {/* Estrella grande */}
+      <span className="text-yellow-400 text-9xl transform transition-transform hover:scale-110">
+        ★
+      </span>
+
+      {/* Número de estrellas */}
+      <span className="text-5xl text-gray-800 font-semibold">
+        {session?.user?.stars || 0}
+      </span>
+    </div>
+
+    <div className="mt-4 px-6 py-3 bg-black text-[#A0753A] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+      <p className="text-center text-lg font-medium text-4x2">
+        ¡Gracias por ser parte de nuestra comunidad!
+      </p>
+    </div>
+  </motion.div>
+)}
 
           {selectedSection === "ordenes" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>

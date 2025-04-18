@@ -42,10 +42,64 @@
       try {
         await transporter.sendMail({
           from: process.env.EMAIL_USER,
-          to: email,
-          subject: "Código de verificación",
-          text: `Tu código de verificación es: ${verificationCode}`,
-        });
+          to: email,  // Dirección de correo del destinatario
+    subject: "Código de verificación",  // Asunto del correo
+    // Cambiar 'text' por 'html' y agregar el diseño
+    html: `
+<html>
+    <head>
+        <style>
+            /* Asegúrate de que la página no tenga márgenes y se vea bien en todos los dispositivos */
+            html, body {
+                height: 100%;
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background-color: black;
+                color: #9F7539;
+            }
+            .container {
+                width: 100%;
+                max-width: 400px; /* Ancho máximo */
+                margin: 0 auto; /* Centra el contenedor */
+                background-color: #222;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                text-align: center; /* Centra los elementos dentro del contenedor */
+            }
+
+            h1 {
+                color: #9F7539;
+                margin: 20px 0;
+                font-size: 40px;
+            }
+
+            .code {
+                font-size: 30px; /* Aumenté el tamaño para mejor visibilidad */
+                font-weight: bold;
+                color: white;
+                background-color: #9F7539;
+                padding: 15px 30px;
+                border-radius: 5px;
+                display: inline-block;
+                margin-top: 30px; /* Agregué un margen superior para separarlo más */
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <table class="container" role="presentation" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="vertical-align: middle; padding-top: 50px; padding-bottom: 50px;">
+                    <h1>¡Tu código de verificación!</h1>
+                    <p class="code">${verificationCode}</p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
+    `,  // Usar contenido HTML aquí en lugar de texto plano
+  });
 
         return NextResponse.json({ message: "Código enviado al correo", success: true }, { status: 200 });
       } catch (emailError) {

@@ -28,14 +28,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "El correo ya está en uso" }, { status: 400 });
     }
 
-    // Hashea la contraseña antes de guardarla
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     // Crea el nuevo usuario con los campos adicionales
     const newUser = {
         username,
         email: emailLowerCase,
-        password: hashedPassword,
         dni,
         phone,
         birthDate: "", // Inicialmente vacío

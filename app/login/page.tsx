@@ -15,14 +15,7 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("");
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-  const { data: session } = useSession();
 
-  // Si ya hay sesión, redirigir a la página principal
-  useEffect(() => {
-    if (session) {
-      router.push("/");
-    }
-  }, [session, router]);
 
   const sendVerificationCode = async () => {
     if (!email) {
@@ -119,10 +112,6 @@ export default function Login() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    await signIn("google", { callbackUrl: "/" });
-  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-8">
@@ -151,15 +140,6 @@ export default function Login() {
               {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Enviar código"}
             </button>
 
-            <div className="my-4 text-gray-600">O</div>
-
-            <button
-              onClick={handleGoogleSignIn}
-              disabled={loading}
-              className="w-full bg-black text-[#A0753A] py-3 rounded-xl font-semibold transition hover:scale-105 flex items-center justify-center gap-2"
-            >
-              {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Continuar con Google"}
-            </button>
           </>
         ) : (
           <>
