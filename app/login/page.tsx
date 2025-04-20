@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 
 export default function Login() {
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [step, setStep] = useState(1);
