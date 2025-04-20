@@ -11,23 +11,23 @@ const getCollection = async () => {
 
 // PATCH: Actualizar usuario
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: Request,
+  context: { params: { id: string } }
 ) {
   try {
     const collection = await getCollection();
-
-    const updates = await req.json();
-
+    
+    const updates = await request.json();
+    
     if (!updates.username || !updates.email) {
       return NextResponse.json({ message: "Nombre y correo son obligatorios" }, { status: 400 });
     }
-
+    
     const result = await collection.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(context.params.id) },
       { $set: updates }
     );
-
+    
     if (result.modifiedCount === 1) {
       return NextResponse.json({ message: "Usuario actualizado correctamente" }, { status: 200 });
     } else {
@@ -42,12 +42,12 @@ export async function PATCH(
 // DELETE: Eliminar usuario
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const collection = await getCollection();
     
-    const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
+    const result = await collection.deleteOne({ _id: new ObjectId(context.params.id) });
     
     if (result.deletedCount === 1) {
       return NextResponse.json({ message: "Usuario eliminado correctamente" }, { status: 200 });
