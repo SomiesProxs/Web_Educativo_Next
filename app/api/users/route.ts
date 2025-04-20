@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { MongoClient, Db, Collection } from "mongodb";
 
 // Cached connection
