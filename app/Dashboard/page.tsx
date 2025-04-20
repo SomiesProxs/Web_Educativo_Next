@@ -262,7 +262,7 @@ const handleClick = () => {
   <Image 
     src={image} 
     alt="Foto de perfil" 
-    width={80}  // ✅ Ajusta según necesites
+    width={80}  // ✅ Ajusta según necesitess
     height={80} // ✅ Ajusta según necesites
     className="w-full h-full object-cover rounded-full"
   />
