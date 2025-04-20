@@ -3,7 +3,10 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 // Actualizar usuario (PATCH)
-export async function PATCH(req: Request, context: { params: { id: string } }) {
+export async function PATCH(
+  req: Request,
+  context: { params: { [key: string]: string } }
+) {
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
@@ -12,7 +15,10 @@ export async function PATCH(req: Request, context: { params: { id: string } }) {
     const updates = await req.json();
 
     if (!updates.username || !updates.email) {
-      return NextResponse.json({ message: "Nombre y correo son obligatorios" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Nombre y correo son obligatorios" },
+        { status: 400 }
+      );
     }
 
     const result = await collection.updateOne(
@@ -21,9 +27,15 @@ export async function PATCH(req: Request, context: { params: { id: string } }) {
     );
 
     if (result.modifiedCount === 1) {
-      return NextResponse.json({ message: "Usuario actualizado correctamente" }, { status: 200 });
+      return NextResponse.json(
+        { message: "Usuario actualizado correctamente" },
+        { status: 200 }
+      );
     } else {
-      return NextResponse.json({ message: "No se realizaron cambios o usuario no encontrado" }, { status: 404 });
+      return NextResponse.json(
+        { message: "No se realizaron cambios o usuario no encontrado" },
+        { status: 404 }
+      );
     }
   } catch (error) {
     console.error("Error al actualizar usuario:", error);
@@ -32,7 +44,10 @@ export async function PATCH(req: Request, context: { params: { id: string } }) {
 }
 
 // Eliminar usuario (DELETE)
-export async function DELETE(req: Request, context: { params: { id: string } }) {
+export async function DELETE(
+  req: Request,
+  context: { params: { [key: string]: string } }
+) {
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
@@ -40,12 +55,20 @@ export async function DELETE(req: Request, context: { params: { id: string } }) 
 
     const id = context.params.id;
 
-    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+    const result = await collection.deleteOne({
+      _id: new ObjectId(id),
+    });
 
     if (result.deletedCount === 1) {
-      return NextResponse.json({ message: "Usuario eliminado correctamente" }, { status: 200 });
+      return NextResponse.json(
+        { message: "Usuario eliminado correctamente" },
+        { status: 200 }
+      );
     } else {
-      return NextResponse.json({ message: "Usuario no encontrado" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Usuario no encontrado" },
+        { status: 404 }
+      );
     }
   } catch (error) {
     console.error("Error al eliminar usuario:", error);
