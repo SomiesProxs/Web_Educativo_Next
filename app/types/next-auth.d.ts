@@ -1,4 +1,6 @@
-import { DefaultSession } from "next-auth";
+// types/next-auth.d.ts
+import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -7,10 +9,31 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
-      phone?: string; // Agregado
-      birthDate?: string; // Agregado
-      gender?: string; // Agregado
-      stars?: number; // Se agrega la propiedad "stars"
+      phone?: string;
+      birthDate?: string;
+      gender?: string;
+      stars?: number;
+      isAdmin?: boolean;
     } & DefaultSession["user"];
+  }
+
+  interface User extends DefaultUser {
+    id?: string;
+    isAdmin?: boolean;
+    stars?: number;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    phone?: string;
+    birthDate?: string;
+    gender?: string;
+    stars?: number;
+    isAdmin?: boolean;
   }
 }
