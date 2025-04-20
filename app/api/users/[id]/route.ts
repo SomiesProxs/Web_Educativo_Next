@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 // Actualizar usuario (PATCH)
 export async function PATCH(
   req: Request,
-  context: { params: { [key: string]: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const client = await clientPromise;
@@ -39,39 +39,6 @@ export async function PATCH(
     }
   } catch (error) {
     console.error("Error al actualizar usuario:", error);
-    return NextResponse.json({ message: "Error del servidor" }, { status: 500 });
-  }
-}
-
-// Eliminar usuario (DELETE)
-export async function DELETE(
-  req: Request,
-  context: { params: { [key: string]: string } }
-) {
-  try {
-    const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
-    const collection = db.collection("Clientes");
-
-    const id = context.params.id;
-
-    const result = await collection.deleteOne({
-      _id: new ObjectId(id),
-    });
-
-    if (result.deletedCount === 1) {
-      return NextResponse.json(
-        { message: "Usuario eliminado correctamente" },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        { message: "Usuario no encontrado" },
-        { status: 404 }
-      );
-    }
-  } catch (error) {
-    console.error("Error al eliminar usuario:", error);
     return NextResponse.json({ message: "Error del servidor" }, { status: 500 });
   }
 }
