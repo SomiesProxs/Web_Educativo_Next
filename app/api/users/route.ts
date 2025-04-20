@@ -48,7 +48,8 @@ export async function GET(req: Request): Promise<Response> {
       username: 1,
       email: 1,
       phone: 1,
-      stars: 1
+      stars: 1,
+      theme: 1
     };
     
     // Execute query with pagination

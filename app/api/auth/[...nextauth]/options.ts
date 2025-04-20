@@ -50,22 +50,7 @@ export const authOptions: NextAuthOptions = {
         const emailLowerCase = user.email.toLowerCase();
         const existingUser = await usersCollection.findOne({ email: emailLowerCase });
         const isAdmin = await adminCollection.findOne({ email: emailLowerCase });
-  
-        // Si no es cliente pero es admin, crear como cliente
-        if (!existingUser && isAdmin) {
-          await usersCollection.insertOne({
-            _id: new ObjectId(),
-            username: user.name,
-            email: emailLowerCase,
-            image: user.image || null,
-            phone: "",
-            birthDate: "",
-            gender: "",
-            stars: 50,
-            createdAt: new Date(),
-          });
-        }
-  
+
         // Si es Google y nuevo usuario cliente
         if (!existingUser && account?.provider === "google") {
           await usersCollection.insertOne({
@@ -73,10 +58,11 @@ export const authOptions: NextAuthOptions = {
             username: user.name,
             email: emailLowerCase,
             image: user.image || null,
-            phone: "",
+            phone: 0,
             birthDate: "",
             gender: "",
             stars: 20,
+            theme: 0,
             createdAt: new Date(),
           });
         }
@@ -89,6 +75,7 @@ export const authOptions: NextAuthOptions = {
           token.id = user.id;
           token.email = user.email;
           token.stars = 20;
+          token.theme = 0;
         }
   
         if (token.email) {
@@ -103,10 +90,11 @@ export const authOptions: NextAuthOptions = {
           if (userData) {
             token.id = userData._id.toString();
             token.name = userData.username || userData.name;
-            token.phone = userData.phone || "";
+            token.phone = userData.phone || 0;
             token.birthDate = userData.birthDate || "";
             token.gender = userData.gender || "";
             token.stars = userData.stars || 20;
+            token.theme = userData.theme || 0;
           }
   
           token.isAdmin = !!isAdmin;
@@ -121,9 +109,10 @@ export const authOptions: NextAuthOptions = {
           session.user.email = token.email as string;
           session.user.name = token.name as string;
           session.user.stars = token.stars as number;
-          session.user.phone = token.phone as string;
+          session.user.phone = token.phone as number;
           session.user.birthDate = token.birthDate as string;
           session.user.gender = token.gender as string;
+          session.user.theme = token.theme as number;
           session.user.isAdmin = token.isAdmin as boolean;
         }
         return session;

@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 
 export async function POST(req) {
   try {
-    const { email, image, username, phone, birthDate, gender } = await req.json();
+    const { email, image, username, phone, birthDate, gender, theme } = await req.json();
 
     if (!email) {
       return new Response(JSON.stringify({ error: "Email is required" }), { status: 400 });
@@ -15,7 +15,7 @@ export async function POST(req) {
     const users = db.collection("Clientes");
 
     // Construimos el objeto de actualización dinámicamente
-    const updateFields = { username, phone, birthDate, gender };
+    const updateFields = { username, phone, birthDate, gender, theme };
     if (image) updateFields.image = image; // Solo actualiza la imagen si hay una nueva
 
     const result = await users.updateOne(

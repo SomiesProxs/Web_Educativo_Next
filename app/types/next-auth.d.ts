@@ -8,10 +8,11 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
-      phone?: string;
+      phone?: number;
       birthDate?: string;
       gender?: string;
       stars?: number;
+      theme?: number;
       isAdmin?: boolean;
     } & DefaultSession["user"];
   }
@@ -20,6 +21,7 @@ declare module "next-auth" {
     id?: string;
     isAdmin?: boolean;
     stars?: number;
+    theme?: number;
   }
 }
 
@@ -29,10 +31,11 @@ declare module "next-auth/jwt" {
     name?: string | null;
     email?: string | null;
     image?: string | null;
-    phone?: string;
+    phone?: number;
     birthDate?: string;
     gender?: string;
     stars?: number;
+    theme?: number;
     isAdmin?: boolean;
   }
 }

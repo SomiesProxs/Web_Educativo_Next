@@ -13,7 +13,7 @@ import './portada.css';
 import './pie.css';
 
 const Portada: React.FC = () => {
-const { data: session, status } = useSession();  
+const { data: session, status, update } = useSession();  
 const [showMenu, setShowMenu] = useState(false);
 const router = useRouter();
 const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -71,13 +71,25 @@ useEffect(() => {
    setMostrarContenido(!mostrarContenido);
  };
 
- //cuenta dx
-  
  return (
    <div className="xdportada">
+    {/* 
+<button
+  type="button"
+  onClick={toggleTheme}
+  title="Cambiar tema"
+  aria-label="Cambiar tema"
+  disabled={loading}
+  className={`fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg transition-all duration-300 z-50 disabled:opacity-50 
+    ${localTheme === 1 ? "bg-black text-white" : "bg-white text-black"}`}
+>
+  {localTheme === 1 ? "🌙" : "☀️"}
+</button>
+*/}
      <nav className='cabezaportada'>
        <section className="subcabeza1portada">
          <section className="cuadro1cabeza1portada">
+          
            <div className="logocuadro1cabeza1portada">
              <Image
                src="/logo.jpg"
@@ -125,29 +137,30 @@ useEffect(() => {
 )}
 
 </div>
-
-          {/* 📌 Dropdown Menu */}
-          {showMenu && (
-            <div className="dropdown-menu absolute right-0 mt-2 w-40 bg-[#1E1E1E] rounded-lg shadow-lg p-2 flex flex-col border border-[#A0753A]">
-              <button 
-                onClick={() => router.push("/Dashboard")}
-                className="text-white text-left py-2 px-3 hover:bg-[#A0753A] rounded transition"
-              >
-                Ver perfil
-              </button>
-              <button 
-                onClick={() => signOut()} 
-                className="text-red-400 text-left py-2 px-3 hover:bg-red-600 hover:text-white rounded transition"
-              >
-                Cerrar sesión
-              </button>
-            </div>
+{showMenu && (
+  <div className="dropdown-menu absolute right-0 mt-2 w-40 bg-[#1E1E1E] rounded-lg shadow-lg p-2 flex flex-col border border-[#A0753A]">
+    <button 
+      onClick={() => router.push("/Dashboard")}
+      className="text-white text-left py-2 px-3 hover:bg-[#A0753A] rounded transition"
+    >
+      Ver perfil
+    </button>
+    <button 
+      onClick={() => signOut()} 
+      className="text-red-400 text-left py-2 px-3 hover:bg-red-600 hover:text-white rounded transition"
+    >
+      Cerrar sesión
+    </button>
+  </div>
           )}
         </div>
       ) : (
-        <a href="/login" className="bg-[#A0753A] text-white px-4 py-2 rounded">
-          Iniciar sesión
-        </a>
+<a
+  href="/login"
+  className="bg-[#A0753A] text-white px-4 py-2 rounded text-base sm:text-lg md:text-xl sm:px-3 sm:py-1"
+>
+  Sin Cuenta
+</a>
       )}
     </div>
 

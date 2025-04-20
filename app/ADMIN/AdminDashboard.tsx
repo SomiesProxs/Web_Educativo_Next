@@ -1,13 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-
 // Tipado de usuario
 interface User {
   _id: string;
   username: string;
   email: string;
-  phone: string;
+  phone: number;
   stars: number;
 }
 
@@ -23,10 +22,12 @@ const AdminDashboard = () => {
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const [editForm, setEditForm] = useState({
     username: "",
     email: "",
-    phone: "",
+    phone: 0,
+    stars: 0,
   });
 
   const fetchUsers = async (page: number, query: string) => {
@@ -65,6 +66,7 @@ const AdminDashboard = () => {
       username: user.username,
       email: user.email,
       phone: user.phone,
+      stars: user.stars,
     });
     setShowModal(true);
   };
@@ -76,7 +78,10 @@ const AdminDashboard = () => {
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEditForm((prev) => ({ ...prev, [name]: value }));
+    setEditForm((prev) => ({
+      ...prev,
+      [name]: name === "phone" || name === "stars" ? Number(value) : value,
+    }));
   };
 
   const handleUpdateUser = async () => {
@@ -117,14 +122,34 @@ const AdminDashboard = () => {
     }
   };
 
+  // Effect para controlar el modo oscuro
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
 
+  // Función para alternar entre modo oscuro y claro
+  const toggleDarkMode = () => {
+    setDarkMode(prevMode => !prevMode);
+  };
   
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100 dark:bg-gray-900 text-black dark:text-white transition-colors duration-300">
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-gray-800 text-white">
+      <aside className="w-full md:w-64 bg-gray-800 dark:bg-gray-950 text-white">
         <div className="p-4">
-          <h1 className="text-2xl font-bold">Panel de Admin</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Panel de Admin</h1>
+            <button
+              onClick={toggleDarkMode}
+              className="text-sm px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-white"
+            >
+              {darkMode ? "☀️ Claro" : "🌙 Oscuro"}
+            </button>
+          </div>
         </div>
         <nav className="mt-6">
           {["usuarios", "productos", "ordenes", "configuracion"].map((tab) => (
@@ -141,8 +166,8 @@ const AdminDashboard = () => {
         </nav>
       </aside>
 
-      {/* Main contentt */}
-      <main className="flex-1 p-4 sm:p-6 bg-gray-100">
+      {/* Main content */}
+      <main className="flex-1 p-4 sm:p-6 bg-gray-100 dark:bg-gray-900">
         {activeTab === "usuarios" && (
           <>
             <h2 className="text-xl font-semibold mb-4">Gestión de Usuarios</h2>
@@ -153,15 +178,15 @@ const AdminDashboard = () => {
                 placeholder="Buscar por nombre o email"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="p-2 border border-gray-300 rounded-md w-full sm:w-1/3"
+                className="p-2 border border-gray-300 dark:border-gray-700 rounded-md w-full sm:w-1/3 bg-white dark:bg-gray-800 text-black dark:text-white"
               />
-              {isLoading && <span className="text-gray-500">Cargando...</span>}
+              {isLoading && <span className="text-gray-500 dark:text-gray-400">Cargando...</span>}
             </div>
 
             {/* Tabla */}
             <div className="overflow-x-auto">
-              <table className="w-full bg-white shadow rounded text-sm">
-                <thead className="bg-gray-200">
+              <table className="w-full bg-white dark:bg-gray-800 shadow rounded text-sm">
+                <thead className="bg-gray-200 dark:bg-gray-700">
                   <tr>
                     <th className="p-2 text-left">#</th>
                     <th className="p-2 text-left">Nombre</th>
@@ -174,7 +199,7 @@ const AdminDashboard = () => {
                 <tbody>
                   {users.length > 0 ? (
                     users.map((user, index) => (
-                      <tr key={user._id} className="hover:bg-gray-50">
+                      <tr key={user._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="p-2">{(currentPage - 1) * usersPerPage + index + 1}</td>
                         <td className="p-2">{user.username}</td>
                         <td className="p-2">{user.email}</td>
@@ -192,7 +217,7 @@ const AdminDashboard = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="p-4 text-center text-gray-500">
+                      <td colSpan={6} className="p-4 text-center text-gray-500 dark:text-gray-400">
                         No se encontraron usuarios.
                       </td>
                     </tr>
@@ -204,14 +229,14 @@ const AdminDashboard = () => {
             {/* Modal */}
             {showModal && selectedUser && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white p-6 rounded-lg w-96 space-y-4 shadow-xl">
-                  <h3 className="text-lg font-semibold">Editar Usuario</h3>
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-96 space-y-4 shadow-xl">
+                  <h3 className="text-lg font-semibold dark:text-white">Editar Usuario</h3>
                   <input
                     type="text"
                     name="username"
                     value={editForm.username}
                     onChange={handleEditChange}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600"
                     placeholder="Nombre"
                   />
                   <input
@@ -219,16 +244,24 @@ const AdminDashboard = () => {
                     name="email"
                     value={editForm.email}
                     onChange={handleEditChange}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600"
                     placeholder="Email"
                   />
                   <input
-                    type="text"
+                    type="number"
                     name="phone"
                     value={editForm.phone}
                     onChange={handleEditChange}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600"
                     placeholder="Teléfono"
+                  />
+                  <input
+                    type="number"
+                    name="stars"
+                    value={editForm.stars}
+                    onChange={handleEditChange}
+                    className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600"
+                    placeholder="Estrellas"
                   />
                   <div className="flex justify-between">
                     <button
@@ -245,7 +278,7 @@ const AdminDashboard = () => {
                     </button>
                     <button
                       onClick={closeModal}
-                      className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+                      className="bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-white px-4 py-2 rounded"
                     >
                       Cancelar
                     </button>
@@ -260,29 +293,29 @@ const AdminDashboard = () => {
                 <button
                   onClick={() => handlePageChange(1)}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                  className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded disabled:opacity-50"
                 >
                   Primero
                 </button>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                  className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded disabled:opacity-50"
                 >
                   Anterior
                 </button>
-                <span className="px-3 py-1">Página {currentPage} de {totalPages}</span>
+                <span className="px-3 py-1 dark:text-white">Página {currentPage} de {totalPages}</span>
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                  className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded disabled:opacity-50"
                 >
                   Siguiente
                 </button>
                 <button
                   onClick={() => handlePageChange(totalPages)}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                  className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded disabled:opacity-50"
                 >
                   Último
                 </button>
@@ -294,21 +327,21 @@ const AdminDashboard = () => {
         {activeTab === "productos" && (
           <div>
             <h2 className="text-xl font-semibold mb-4">Gestión de Productos</h2>
-            <p>Aquí va la lógica de productos.</p>
+            <p className="dark:text-gray-300">Aquí va la lógica de productos.</p>
           </div>
         )}
 
         {activeTab === "ordenes" && (
           <div>
             <h2 className="text-xl font-semibold mb-4">Gestión de Órdenes</h2>
-            <p>Aquí va la lógica de órdenes.</p>
+            <p className="dark:text-gray-300">Aquí va la lógica de órdenes.</p>
           </div>
         )}
 
         {activeTab === "configuracion" && (
           <div>
             <h2 className="text-xl font-semibold mb-4">Configuración</h2>
-            <p>Aquí van los ajustes generales.</p>
+            <p className="dark:text-gray-300">Aquí van los ajustes generales.</p>
           </div>
         )}
       </main>

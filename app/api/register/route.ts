@@ -11,10 +11,10 @@ export async function POST(req: Request) {
     const db = client.db(process.env.MONGODB_DB);
     const ClientesCollection = db.collection("Clientes");
 
-    const { username, email, password, dni, phone } = await req.json();
+    const { username, email, password, dni, phone, theme } = await req.json();
 
     // Verifica que todos los campos obligatorios estén presentes
-    if (!username || !email || !password || !dni || !phone) {
+    if (!username || !email || !password || !dni || !phone || !theme) {
       return NextResponse.json({ message: "Todos los campos son obligatorios" }, { status: 400 });
     }
 
@@ -41,6 +41,7 @@ export async function POST(req: Request) {
         birthDate: "", // Inicialmente vacío
         gender: "", // Inicialmente vacío
         stars: 20, // Asignamos 20 estrellas por defecto
+        theme: 0,
         createdAt: new Date(),
     };
 
