@@ -141,7 +141,7 @@ const AdminDashboard = () => {
         </nav>
       </aside>
 
-      {/* Main content */}
+      {/* Main contentt */}
       <main className="flex-1 p-4 sm:p-6 bg-gray-100">
         {activeTab === "usuarios" && (
           <>
