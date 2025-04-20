@@ -31,8 +31,8 @@ export async function PATCH(req: Request, context: { params: { id: string } }) {
   }
 }
 
-// Eliminar usuario (DELETE) ✅ SIN TIPADO ESTRICTO
-export async function DELETE(req: Request, context: any) {
+// Eliminar usuario (DELETE)
+export async function DELETE(req: Request, context: { params: { id: string } }) {
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
