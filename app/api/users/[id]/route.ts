@@ -32,13 +32,13 @@ export async function PATCH(req: Request, context: { params: { id: string } }) {
 }
 
 // Eliminar usuario (DELETE)
-export async function DELETE(req: Request, context: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
     const collection = db.collection("Clientes");
 
-    const result = await collection.deleteOne({ _id: new ObjectId(context.params.id) });
+    const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
 
     if (result.deletedCount === 1) {
       return NextResponse.json({ message: "Usuario eliminado correctamente" }, { status: 200 });
