@@ -1,6 +1,6 @@
 // app/ADMIN/page.tsx
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
 import AdminDashboard from "./AdminDashboard"; // asegúrate de que esté en la misma carpeta
 
