@@ -1,6 +1,5 @@
 // types/next-auth.d.ts
 import type { DefaultSession, DefaultUser } from "next-auth";
-import type { JWT as NextAuthJWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
