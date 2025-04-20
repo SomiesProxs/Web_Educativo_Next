@@ -12,7 +12,7 @@ const getCollection = async () => {
 // PATCH: Actualizar usuario
 export async function PATCH(
   request: Request,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const collection = await getCollection();
@@ -24,7 +24,7 @@ export async function PATCH(
     }
     
     const result = await collection.updateOne(
-      { _id: new ObjectId(context.params.id) },
+      { _id: new ObjectId(params.id) },
       { $set: updates }
     );
     
@@ -39,15 +39,15 @@ export async function PATCH(
   }
 }
 
-// DELETE: Eliminar usuario
+// DELETE: Eliminar usuario - con firma simplificada
 export async function DELETE(
-  request: Request,
-  context: { params: { id: string } }
+  _request: Request | null,
+  { params }: { params: { id: string } }
 ) {
   try {
     const collection = await getCollection();
     
-    const result = await collection.deleteOne({ _id: new ObjectId(context.params.id) });
+    const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
     
     if (result.deletedCount === 1) {
       return NextResponse.json({ message: "Usuario eliminado correctamente" }, { status: 200 });
