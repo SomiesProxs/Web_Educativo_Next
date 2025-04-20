@@ -41,14 +41,14 @@ export async function PATCH(
 
 // DELETE: Eliminar usuario
 export async function DELETE(
-  req: Request,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
     const collection = await getCollection();
-
+    
     const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
-
+    
     if (result.deletedCount === 1) {
       return NextResponse.json({ message: "Usuario eliminado correctamente" }, { status: 200 });
     } else {
