@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, ObjectId } from "mongodb";
 
-// PATCH: Actualizar usuario
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+// Para rutas dinámicas en Next.js
+export async function PATCH(request: NextRequest) {
   try {
+    // Extraer el ID de la URL manualmente
+    const urlParts = request.url.split('/');
+    const id = urlParts[urlParts.length - 1];
+    
     const client = new MongoClient(process.env.MONGODB_URI as string);
     await client.connect();
     
@@ -18,7 +22,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
     
     const result = await collection.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updates }
     );
     
@@ -36,15 +40,19 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 }
 
 // DELETE: Eliminar usuario
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest) {
   try {
+    // Extraer el ID de la URL manualmente
+    const urlParts = request.url.split('/');
+    const id = urlParts[urlParts.length - 1];
+    
     const client = new MongoClient(process.env.MONGODB_URI as string);
     await client.connect();
     
     const db = client.db("SomiesProxs");
     const collection = db.collection("Clientes");
     
-    const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
     
     await client.close();
     
