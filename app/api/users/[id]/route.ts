@@ -1,21 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
-// Función para obtener la colección de usuarios
-const getCollection = async () => {
-  const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB);
-  return db.collection("Clientes");
-};
+// Conectar a MongoDB
+async function connectToDatabase() {
+  const client = new MongoClient(process.env.MONGODB_URI as string);
+  await client.connect();
+  const db = client.db("SomiesProxs");
+  return { client, db };
+}
 
-// PATCH: Actualizar usuario
+// Controlador para /users/[id]
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const collection = await getCollection();
+    const { db } = await connectToDatabase();
+    const collection = db.collection("Clientes");
     
     const updates = await request.json();
     
@@ -29,33 +30,33 @@ export async function PATCH(
     );
     
     if (result.modifiedCount === 1) {
-      return NextResponse.json({ message: "Usuario actualizado correctamente" }, { status: 200 });
+      return NextResponse.json({ message: "Usuario actualizado correctamente" });
     } else {
-      return NextResponse.json({ message: "No se realizaron cambios o usuario no encontrado" }, { status: 404 });
+      return NextResponse.json({ message: "Usuario no encontrado" }, { status: 404 });
     }
   } catch (error) {
-    console.error("Error al actualizar usuario:", error);
+    console.error("Error:", error);
     return NextResponse.json({ message: "Error del servidor" }, { status: 500 });
   }
 }
 
-// DELETE: Eliminar usuario - con tipo NextRequest
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const collection = await getCollection();
+    const { db } = await connectToDatabase();
+    const collection = db.collection("Clientes");
     
     const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
     
     if (result.deletedCount === 1) {
-      return NextResponse.json({ message: "Usuario eliminado correctamente" }, { status: 200 });
+      return NextResponse.json({ message: "Usuario eliminado correctamente" });
     } else {
       return NextResponse.json({ message: "Usuario no encontrado" }, { status: 404 });
     }
   } catch (error) {
-    console.error("Error al eliminar usuario:", error);
+    console.error("Error:", error);
     return NextResponse.json({ message: "Error del servidor" }, { status: 500 });
   }
 }
