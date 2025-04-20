@@ -1,11 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-// Actualizar usuario (PATCH)
 export async function PATCH(
-  req: Request,
-  context: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
   try {
     const client = await clientPromise;
@@ -22,7 +21,7 @@ export async function PATCH(
     }
 
     const result = await collection.updateOne(
-      { _id: new ObjectId(context.params.id) },
+      { _id: new ObjectId(params.id) },
       { $set: updates }
     );
 
