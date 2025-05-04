@@ -83,7 +83,8 @@ export const authOptions: NextAuthOptions = {
           const adminCollection = db.collection("Admins");
   
           const userData = await usersCollection.findOne({ email: token.email });
-          const isAdmin = await adminCollection.findOne({ email: token.email });
+          // Use the result directly instead of storing in a variable
+          token.isAdmin = !!(await adminCollection.findOne({ email: token.email }));
   
           if (userData) {
             token.id = userData._id.toString();
@@ -94,8 +95,6 @@ export const authOptions: NextAuthOptions = {
             token.stars = userData.stars || 20;
             token.theme = userData.theme || 0;
           }
-  
-          token.isAdmin = !!isAdmin;
         }
   
         return token;
