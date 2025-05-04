@@ -33,7 +33,7 @@ const [modalMessage, setModalMessage] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const setDarkMode = useState(false)[1];
 
   const { data: session, update } = useSession();
   const sessionUser = session?.user; 

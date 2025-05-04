@@ -49,7 +49,6 @@ export const authOptions: NextAuthOptions = {
   
         const emailLowerCase = user.email.toLowerCase();
         const existingUser = await usersCollection.findOne({ email: emailLowerCase });
-        const isAdmin = await adminCollection.findOne({ email: emailLowerCase });
 
         // Si es Google y nuevo usuario cliente
         if (!existingUser && account?.provider === "google") {

@@ -23,7 +23,8 @@ export async function PATCH(req: NextRequest) {
     );
 
     return NextResponse.json({ message: "Theme actualizado", theme });
-  } catch (err) {
+  } catch (error) {
+    console.error("Error al actualizar el tema:", error);
     return NextResponse.json({ error: "Error al actualizar" }, { status: 500 });
   }
 }

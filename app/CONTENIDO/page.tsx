@@ -14,7 +14,7 @@ import './pie.css';
 
 const Portada: React.FC = () => {
   
-const { data: session, status, update } = useSession();  
+  const { data: session, status } = useSession();
 const [showMenu, setShowMenu] = useState(false);
 const router = useRouter();
 const [profileImage, setProfileImage] = useState<string | null>(null);
