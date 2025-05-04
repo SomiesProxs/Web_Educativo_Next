@@ -12,7 +12,9 @@
             const router = useRouter();
             const [selectedSection, setSelectedSection] = useState<string>("ajustes");
             const [username, setUsername] = useState<string>(session?.user?.name || "");
-            const [phone, setPhone] = useState<string>(session?.user?.phone || "");
+            const [phone, setPhone] = useState<string>(
+              session?.user?.phone !== undefined ? String(session?.user?.phone) : ""
+            );
             const [birthDate, setBirthDate] = useState<string>(session?.user?.birthDate || "");
             const [gender, setGender] = useState<string>(session?.user?.gender || "");
             
