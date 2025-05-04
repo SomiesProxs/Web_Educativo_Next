@@ -45,7 +45,6 @@ export const authOptions: NextAuthOptions = {
         const client = await clientPromise;
         const db = client.db(process.env.MONGODB_DB);
         const usersCollection = db.collection("Clientes");
-        const adminCollection = db.collection("Admins");
   
         const emailLowerCase = user.email.toLowerCase();
         const existingUser = await usersCollection.findOne({ email: emailLowerCase });
