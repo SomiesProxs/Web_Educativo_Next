@@ -32,7 +32,8 @@
     display: flex;
     justify-content:space-between;
     align-items: center;
-    background-image: url('/portada.png');
+    background-image: url('/portada.png'); /* ✅ CORRECTO */
+
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -107,7 +108,8 @@
     .sub1cuerpoportada {
         width: 100%;
         height: 100%;
-        background-image: url('/celular.png'); /* Ruta de la imagen */
+        background-image: url('/celular.png'); /* ✅ CORRECTO */
+
         padding: 1px;
     }
     /* Cuadro de texto */
@@ -178,7 +180,7 @@
     /* Fondo estático */
     .sub1cuerpoportada {
         padding: 150px;
-        background-image: url('../public/portada.png'); /* Ruta de la imagen */
+        background-image: url('/public/portada.png'); /* Ruta de la imagen */
     }
     /* Cuadro de texto */
     
