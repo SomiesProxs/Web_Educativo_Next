@@ -1,0 +1,9 @@
+/* globals.css */
+html,
+body {
+  background-color: #000; /* fondo negro real */
+  color: white; /* texto blanco si aplica */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}

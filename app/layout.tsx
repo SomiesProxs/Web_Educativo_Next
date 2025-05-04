@@ -6,7 +6,7 @@ import Script from "next/script";
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <html lang="es">
+      <html lang="es" className="bg-black">
         <head>
           {/* Tailwind CSS con CDN usando Script de Next.js */}
           <Script 
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             strategy="beforeInteractive" 
           />
         </head>
-        <body className="bg-gray-100">{children}</body>
+        <body className="bg-black text-white">{children}</body>
       </html>
     </SessionProvider>
   );

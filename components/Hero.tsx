@@ -3,70 +3,69 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
+import './globals.css';
 
 export default function Hero() {
-  const textRef = useRef<HTMLDivElement>(null);
-  const [isReady, setIsReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [letters, setLetters] = useState<string[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const el = textRef.current;
-    if (!el) return;
-
-    el.innerHTML = '';
-    setIsReady(true); // Mostrar el contenido solo cuando comience la animación
-
-    const word = ["S", "O", "M", "I", "E", "S"];
-    let currentWord = "";
+    const word = ['S', 'O', 'M', 'I', 'E', 'S'];
     let delay = 0;
 
-    word.forEach((letter, index) => {
-      setTimeout(() => {
-        currentWord += letter;
-        el.innerHTML = currentWord;
-
-        gsap.fromTo(
-          el.children[index],
-          { scale: 1.5 },
-          { scale: 1, duration: 0.5, ease: "power2.out" }
-        );
-      }, delay);
-      delay += 400;
-    });
-
     setTimeout(() => {
-      gsap.to(el, {
-        duration: 1,
-        opacity: 0,
-        scale: 0.2,
-        ease: 'power2.inOut',
-        onComplete: () => {
-          if (el) {
-            el.innerHTML = "Bienvenido";
-            gsap.from(el, {
-              opacity: 0,
-              scale: 2.5,
-              duration: 1,
-              onComplete: () => {
-                router.push('/CONTENIDO');
-              }
-            });
-          }
-        },
-      });
-    }, delay + 1000);
+      setIsLoading(false); // Oculta el spinner y muestra las letras
 
+      word.forEach((letter, index) => {
+        setTimeout(() => {
+          setLetters((prev) => [...prev, letter]);
+
+          const el = containerRef.current?.children[index];
+          if (el) {
+            gsap.fromTo(
+              el,
+              { scale: 1.5, opacity: 0 },
+              { scale: 1, opacity: 1, duration: 0.5, ease: 'power2.out' }
+            );
+          }
+        }, index * 400);
+      });
+
+      // Redirigir después de la animación
+      setTimeout(() => {
+        if (containerRef.current) {
+          gsap.to(containerRef.current, {
+            opacity: 0,
+            scale: 0.2,
+            duration: 1,
+            ease: 'power2.inOut',
+            onComplete: () => {
+              router.push('/CONTENIDO');
+            },
+          });
+        }
+      }, word.length * 400 + 1000);
+    }, 100); // Pequeño delay inicial para simular carga
   }, [router]);
+
+  // Spinner de carga mientras isLoading === true
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black z-50">
+        <div className="w-16 h-16 border-8 border-t-transparent border-white border-solid rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-black text-white">
-      <div
-        ref={textRef}
-        className={`text-8xl transition-opacity duration-300 ${isReady ? 'opacity-100' : 'opacity-0'}`}
-      >
-        {/* Este contenido se limpiará antes de animar */}
-        {["S", "O", "M", "I", "E", "S"].map((letter, index) => (
-          <span key={index}>{letter}</span>
+      <div ref={containerRef} className="text-8xl flex gap-2">
+        {letters.map((letter, index) => (
+          <span key={index} className="inline-block">
+            {letter}
+          </span>
         ))}
       </div>
     </div>
