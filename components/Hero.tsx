@@ -1,17 +1,20 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 
 export default function Hero() {
   const textRef = useRef<HTMLDivElement>(null);
+  const [isReady, setIsReady] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const el = textRef.current;
+    if (!el) return;
 
-    if (el) el.innerHTML = '';
+    el.innerHTML = '';
+    setIsReady(true); // Mostrar el contenido solo cuando comience la animación
 
     const word = ["S", "O", "M", "I", "E", "S"];
     let currentWord = "";
@@ -20,10 +23,10 @@ export default function Hero() {
     word.forEach((letter, index) => {
       setTimeout(() => {
         currentWord += letter;
-        el!.innerHTML = currentWord;
+        el.innerHTML = currentWord;
 
         gsap.fromTo(
-          el!.children[index],
+          el.children[index],
           { scale: 1.5 },
           { scale: 1, duration: 0.5, ease: "power2.out" }
         );
@@ -45,7 +48,6 @@ export default function Hero() {
               scale: 2.5,
               duration: 1,
               onComplete: () => {
-                // Redirigir después de mostrar "Bienvenido"
                 router.push('/CONTENIDO');
               }
             });
@@ -58,7 +60,11 @@ export default function Hero() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-black text-white">
-      <div ref={textRef} className="text-8xl">
+      <div
+        ref={textRef}
+        className={`text-8xl transition-opacity duration-300 ${isReady ? 'opacity-100' : 'opacity-0'}`}
+      >
+        {/* Este contenido se limpiará antes de animar */}
         {["S", "O", "M", "I", "E", "S"].map((letter, index) => (
           <span key={index}>{letter}</span>
         ))}
