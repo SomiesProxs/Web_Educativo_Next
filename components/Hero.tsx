@@ -13,7 +13,6 @@ export default function Hero() {
 
   useEffect(() => {
     const word = ['S', 'O', 'M', 'I', 'E', 'S'];
-    let delay = 0;
 
     setTimeout(() => {
       setIsLoading(false); // Oculta el spinner y muestra las letras
