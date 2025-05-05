@@ -1,55 +1,48 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
-import './globals.css';
 
-export default function Hero() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [letters, setLetters] = useState<string[]>([]);
+export default function Hero({ onAnimationComplete }: { onAnimationComplete: () => void }) {
+  const word = ['S', 'O', 'M', 'I', 'E', 'S']; // ✅ Solo lo defines una vez
   const containerRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const word = ['S', 'O', 'M', 'I', 'E', 'S'];
-
     setTimeout(() => {
-      setIsLoading(false); // Oculta el spinner y muestra las letras
+      setIsLoading(false);
 
-      word.forEach((letter, index) => {
-        setTimeout(() => {
-          setLetters((prev) => [...prev, letter]);
-
-          const el = containerRef.current?.children[index];
-          if (el) {
+      // Animar cada letra una a una
+      word.forEach((_, index) => {
+        const el = containerRef.current?.children[index];
+        if (el) {
+          setTimeout(() => {
             gsap.fromTo(
               el,
               { scale: 1.5, opacity: 0 },
-              { scale: 1, opacity: 1, duration: 0.5, ease: 'power2.out' }
+              { scale: 1, opacity: 1, duration: 0.8, ease: 'power2.out' }
             );
-          }
-        }, index * 400);
+          }, index * 600);
+        }
       });
 
-      // Redirigir después de la animación
+      // Animación final
       setTimeout(() => {
         if (containerRef.current) {
           gsap.to(containerRef.current, {
             opacity: 0,
-            scale: 0.2,
-            duration: 1,
+            scale: 0.5,
+            duration: 1.5,
             ease: 'power2.inOut',
             onComplete: () => {
-              router.push('/CONTENIDO');
+              onAnimationComplete();
             },
           });
         }
-      }, word.length * 400 + 1000);
-    }, 100); // Pequeño delay inicial para simular carga
-  }, [router]);
+      }, word.length * 600 + 1000);
+    }, 100);
+  }, [onAnimationComplete, word]);
 
-  // Spinner de carga mientras isLoading === true
   if (isLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black z-50">
@@ -60,11 +53,12 @@ export default function Hero() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-black text-white">
-      <div ref={containerRef} className="text-8xl flex gap-2">
-        {letters.map((letter, index) => (
-          <span key={index} className="inline-block">
-            {letter}
-          </span>
+      <div
+        ref={containerRef}
+        className="text-[80px] font-black leading-none tracking-tight flex gap-1 text-white uppercase lg:text-[180px]"
+      >
+        {word.map((letter, index) => (
+          <span key={index} className="inline-block opacity-0">{letter}</span> // ⬅️ Están ocultas al inicio
         ))}
       </div>
     </div>
