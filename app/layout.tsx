@@ -13,6 +13,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             src="https://cdn.tailwindcss.com" 
             strategy="beforeInteractive" 
           />
+          
+          {/* Google AdSense */}
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2700415692306726"
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
         </head>
         <body className="bg-black text-white">{children}</body>
       </html>

@@ -2,12 +2,37 @@
 import { NextResponse } from 'next/server';
 import { MongoClient, ObjectId } from 'mongodb';
 
+// Define interfaces for your data structures
+interface Subtema {
+  contenido: string;
+  // Add other subtema properties as needed
+}
+
+interface Titulo {
+  titulo: string;
+  subtemas: Subtema[];
+  // Add other titulo properties as needed
+}
+
+interface Curso {
+  _id: ObjectId;
+  titulos: Titulo[];
+  // Add other curso properties as needed
+}
+
+interface RequestBody {
+  cursoId: string;
+  titulo: string;
+  subtemaIndex: number;
+  nuevoContenido: string;
+}
+
 export async function POST(req: Request) {
   let client: MongoClient | null = null;
   
   try {
     // Obtener los datos de la solicitud
-    const { cursoId, titulo, subtemaIndex, nuevoContenido } = await req.json();
+    const { cursoId, titulo, subtemaIndex, nuevoContenido }: RequestBody = await req.json();
     
     // Validar los datos
     if (!cursoId || !titulo || subtemaIndex === undefined || nuevoContenido === undefined) {
@@ -32,7 +57,7 @@ export async function POST(req: Request) {
     console.log('Conectado a MongoDB');
     
     const db = client.db(process.env.MONGODB_DB);
-    const collection = db.collection('Cursos');
+    const collection = db.collection<Curso>('Cursos');
     
     // Buscar el curso y encontrar el índice del título
     const curso = await collection.findOne({ _id: new ObjectId(cursoId) });
@@ -45,7 +70,7 @@ export async function POST(req: Request) {
     }
     
     // Encontrar el índice del título en el array de títulos
-    const tituloIndex = curso.titulos?.findIndex((t: any) => t.titulo === titulo);
+    const tituloIndex = curso.titulos?.findIndex((t: Titulo) => t.titulo === titulo);
     
     if (tituloIndex === undefined || tituloIndex === -1) {
       return NextResponse.json(

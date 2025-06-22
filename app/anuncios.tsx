@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-// Declaración global para TypeScript
+// Declaración global para TypeScript con tipado específico
 declare global {
   interface Window {
-    adsbygoogle: any[];
+    adsbygoogle: Array<Record<string, unknown>>;
   }
 }
 
