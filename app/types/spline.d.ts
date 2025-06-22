@@ -1,3 +1,4 @@
+//types/spline.d.ts
 declare global {
   namespace JSX {
     interface IntrinsicElements {

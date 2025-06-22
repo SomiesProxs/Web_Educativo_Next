@@ -3,3 +3,5 @@ declare namespace JSX {
     'spline-viewer': any;
   }
 }
+
+export {};
