@@ -7,7 +7,6 @@ declare global {
         style?: React.CSSProperties;
         loading?: 'lazy' | 'eager';
         'events-target'?: string;
-        [key: string]: any;
       };
     }
   }
