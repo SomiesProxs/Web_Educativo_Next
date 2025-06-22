@@ -14,6 +14,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             strategy="beforeInteractive" 
           />
           
+          {/* Spline Viewer */}
+          <Script
+            src="https://unpkg.com/@splinetool/viewer@1.0.21/build/spline-viewer.js"
+            strategy="beforeInteractive"
+          />
+          
           {/* Google AdSense */}
           <Script
             async

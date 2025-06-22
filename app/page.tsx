@@ -27,8 +27,8 @@ const Bienvenida = () => {
   const [mostrarContenido, setMostrarContenido] = useState<boolean>(false);
 
   //animacion con spline
-   const [isMobile, setIsMobile] = useState(false);
-const [niveles, setNiveles] = useState<Nivel[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [niveles, setNiveles] = useState<Nivel[]>([]);
   const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
@@ -43,7 +43,6 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
     };
     fetchNiveles();
   }, []);
-
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -72,306 +71,290 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
     };
     fetchSession();
   }, []);
-  
 
-  
-   // Recargar la página
-   const handleReload = () => {
-     if (typeof window !== 'undefined') {
-       window.location.reload();
-     }
-   };
-  
-   // Alternar la visibilidad del menú desplegable
-   const toggleMenu = () => {
-     setMenuVisible(!menuVisible);
-   };
-  
-   // Alternar el contenido adicional
-   const toggleContenido = () => {
-     setMostrarContenido(!mostrarContenido);
-   };
-    
-  
+  // Recargar la página
+  const handleReload = () => {
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+    }
+  };
 
-   const [animationCompleted, setAnimationCompleted] = useState(false);
- 
-   useEffect(() => {
-     const hasVisited = localStorage.getItem('hasVisited');
-     if (!hasVisited) {
-       setShowAnimation(true);
-       localStorage.setItem('hasVisited', 'true');
-     } else {
-       setAnimationCompleted(true); // Ya la vio, mostrar contenido directamente
-     }
-   }, []);
- 
-   const handleAnimationComplete = () => {
-     setAnimationCompleted(true);
-   };
- //spline
- useEffect(() => {
-    import('@splinetool/viewer');
+  // Alternar la visibilidad del menú desplegable
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
+
+  // Alternar el contenido adicional
+  const toggleContenido = () => {
+    setMostrarContenido(!mostrarContenido);
+  };
+
+  const [animationCompleted, setAnimationCompleted] = useState(false);
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVisited');
+    if (!hasVisited) {
+      setShowAnimation(true);
+      localStorage.setItem('hasVisited', 'true');
+    } else {
+      setAnimationCompleted(true); // Ya la vio, mostrar contenido directamente
+    }
+  }, []);
+
+  const handleAnimationComplete = () => {
+    setAnimationCompleted(true);
+  };
+
+  // ✅ useEffect corregido - SIN import('@splinetool/viewer')
+  useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-   return (
-     <main>
-       {showAnimation && !animationCompleted ? (
-         <Hero onAnimationComplete={handleAnimationComplete} />
-       ) : (
+  return (
+    <main>
+      {showAnimation && !animationCompleted ? (
+        <Hero onAnimationComplete={handleAnimationComplete} />
+      ) : (
         <div className="xdportada">
-            {/* 
-        <button
-          type="button"
-          onClick={toggleTheme}
-          title="Cambiar tema"
-          aria-label="Cambiar tema"
-          disabled={loading}
-          className={`fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg transition-all duration-300 z-50 disabled:opacity-50 
-            ${localTheme === 1 ? "bg-black text-white" : "bg-white text-black"}`}
-        >
-          {localTheme === 1 ? "🌙" : "☀️"}
-        </button>
-        */}
-             <nav className='cabezaportada'>
-               <section className="subcabeza1portada">
-                 <section className="cuadro1cabeza1portada">
-                  
-                   <div className="logocuadro1cabeza1portada">
-                     <Image
-                       src="/logo.jpg"
-                       alt="logo"
-                       width={100}
-                       height={50}
-                       onClick={handleReload}
-                       style={{ cursor: 'pointer' }}
-                     />
-                   </div>
-        
-                   <section className="cuentacuadro1cabeza1portada">
-        
-        
-                   <div className="header flex items-center justify-between px-4 py-2 bg-black">
-              {status === "loading" ? ( 
-                <p className="text-white">Cargando...</p>
-              ) : session?.user ? ( 
-                <div className="relative flex items-center">
-                  {/* 📌 Mostrar el nombre SOLO en pantallas grandes si tiene <= 6 letras */}
-                  {(session.user.name || "").length <= 100 && (
-                    <span 
-                      className="text-white mr-2 hidden sm:inline-block truncate max-w-[150px]" 
-                      title={session.user.name || ""}
-                    >
-                      {session.user.name || ""}
-                    </span>
-                  )}
-        
-                  {/* ✅ Mostrar imagen de perfil si existe, sino mostrar la inicial */}
-        <div 
-          className="user-circle cursor-pointer w-12 h-12 bg-[#A0753A] rounded-full flex items-center justify-center text-white text-lg overflow-hidden border-2 border-[#A0753A]"
-          onClick={() => setShowMenu(!showMenu)}
-        >
-        {profileImage ? (
-          <Image  
-            src={profileImage} 
-            alt="Foto de perfil" 
-            width={40}  // ✅ Ajusta el tamaño según necesites
-            height={40} // ✅ Ajusta el tamaño según necesites
-            className="w-full h-full object-cover rounded-full"
-          />
-        ) : (
-          (session.user.name || "").charAt(0).toUpperCase()
-        )}
-        
-        </div>
-        {showMenu && (
-          <div className="dropdown-menu absolute right-0 mt-2 w-40 bg-[#1E1E1E] rounded-lg shadow-lg p-2 flex flex-col border border-[#A0753A]">
-            <button 
-              onClick={() => router.push("/Dashboard")}
-              className="text-white text-left py-2 px-3 hover:bg-[#A0753A] rounded transition"
-            >
-              Ver perfil
-            </button>
-            <button 
-              onClick={() => signOut()} 
-              className="text-red-400 text-left py-2 px-3 hover:bg-red-600 hover:text-white rounded transition"
-            >
-              Cerrar sesión
-            </button>
-          </div>
-                  )}
+          {/* 
+          <button
+            type="button"
+            onClick={toggleTheme}
+            title="Cambiar tema"
+            aria-label="Cambiar tema"
+            disabled={loading}
+            className={`fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg transition-all duration-300 z-50 disabled:opacity-50 
+              ${localTheme === 1 ? "bg-black text-white" : "bg-white text-black"}`}
+          >
+            {localTheme === 1 ? "🌙" : "☀️"}
+          </button>
+          */}
+          <nav className='cabezaportada'>
+            <section className="subcabeza1portada">
+              <section className="cuadro1cabeza1portada">
+                <div className="logocuadro1cabeza1portada">
+                  <Image
+                    src="/logo.jpg"
+                    alt="logo"
+                    width={100}
+                    height={50}
+                    onClick={handleReload}
+                    style={{ cursor: 'pointer' }}
+                  />
                 </div>
-              ) : (
-        <a
-          href="/login"
-          className="bg-[#A0753A] text-white px-4 py-2 rounded text-base sm:text-lg md:text-xl sm:px-3 sm:py-1"
-        >
-          Sin Cuenta
-        </a>
-              )}
-            </div>
-                   </section>
-                 </section>
-               </section>
-        
 
-                 <section className="sub1cabeza2portada">
-                    {/* Botón de hamburguesa */}
-                    <div className="hamburguesaportada" onClick={toggleMenu}>
-                      &#9776;
-                    </div>
+                <section className="cuentacuadro1cabeza1portada">
+                  <div className="header flex items-center justify-between px-4 py-2 bg-black">
+                    {status === "loading" ? ( 
+                      <p className="text-white">Cargando...</p>
+                    ) : session?.user ? ( 
+                      <div className="relative flex items-center">
+                        {/* 📌 Mostrar el nombre SOLO en pantallas grandes si tiene <= 6 letras */}
+                        {(session.user.name || "").length <= 100 && (
+                          <span 
+                            className="text-white mr-2 hidden sm:inline-block truncate max-w-[150px]" 
+                            title={session.user.name || ""}
+                          >
+                            {session.user.name || ""}
+                          </span>
+                        )}
 
-                    {/* Menú desplegable */}
-                    <div className={`menusub1cabeza2portada ${menuVisible ? 'visible' : ''}`}>
-                      {niveles.map((nivel) => (
-                        <a
-                          key={nivel.nombre}
-                          href={`/Niveles/${nivel.nombre.toLowerCase().replace(/\s+/g, '')}`}
+                        {/* ✅ Mostrar imagen de perfil si existe, sino mostrar la inicial */}
+                        <div 
+                          className="user-circle cursor-pointer w-12 h-12 bg-[#A0753A] rounded-full flex items-center justify-center text-white text-lg overflow-hidden border-2 border-[#A0753A]"
+                          onClick={() => setShowMenu(!showMenu)}
                         >
-                          {nivel.nombre}
-                        </a>
-                      ))}
+                          {profileImage ? (
+                            <Image  
+                              src={profileImage} 
+                              alt="Foto de perfil" 
+                              width={40}  // ✅ Ajusta el tamaño según necesites
+                              height={40} // ✅ Ajusta el tamaño según necesites
+                              className="w-full h-full object-cover rounded-full"
+                            />
+                          ) : (
+                            (session.user.name || "").charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        {showMenu && (
+                          <div className="dropdown-menu absolute right-0 mt-2 w-40 bg-[#1E1E1E] rounded-lg shadow-lg p-2 flex flex-col border border-[#A0753A]">
+                            <button 
+                              onClick={() => router.push("/Dashboard")}
+                              className="text-white text-left py-2 px-3 hover:bg-[#A0753A] rounded transition"
+                            >
+                              Ver perfil
+                            </button>
+                            <button 
+                              onClick={() => signOut()} 
+                              className="text-red-400 text-left py-2 px-3 hover:bg-red-600 hover:text-white rounded transition"
+                            >
+                              Cerrar sesión
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <a
+                        href="/login"
+                        className="bg-[#A0753A] text-white px-4 py-2 rounded text-base sm:text-lg md:text-xl sm:px-3 sm:py-1"
+                      >
+                        Sin Cuenta
+                      </a>
+                    )}
+                  </div>
+                </section>
+              </section>
+            </section>
+
+            <section className="sub1cabeza2portada">
+              {/* Botón de hamburguesa */}
+              <div className="hamburguesaportada" onClick={toggleMenu}>
+                &#9776;
+              </div>
+
+              {/* Menú desplegable */}
+              <div className={`menusub1cabeza2portada ${menuVisible ? 'visible' : ''}`}>
+                {niveles.map((nivel) => (
+                  <a
+                    key={nivel.nombre}
+                    href={`/Niveles/${nivel.nombre.toLowerCase().replace(/\s+/g, '')}`}
+                  >
+                    {nivel.nombre}
+                  </a>
+                ))}
+              </div>
+            </section>
+          </nav>
+
+          <main className="cuerpoportada">
+            <section className="sub1cuerpoportada relative w-full overflow-hidden bg-black">
+              {/* Fondo: Spline o imagen móvil */}
+              {isMobile ? (
+                <Image
+                  src="https://cdn.pixabay.com/photo/2017/01/31/13/14/robot-2027195_1280.png"
+                  alt="Fallback móvil"
+                  fill
+                  className="object-cover pointer-events-none z-0"
+                  priority
+                  sizes="100vw"
+                />
+              ) : (
+                <>
+                  <spline-viewer
+                    url="https://prod.spline.design/fNAfkERP-hlFefcl/scene.splinecode"
+                    className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
+                  />
+                  {/* Parche para cubrir figura circular en esquina inferior derecha */}
+                  <div className="absolute bottom-0 right-0 w-40 h-40 bg-black z-10"></div>
+                </>
+              )}
+
+              {/* Contenido encima del fondo */}
+              <section className="espaciosub1cuerpoportada relative z-20"></section>
+              <section className="cuadro1sub1cuerpoportada relative z-20 text-white text-center">
+                <h1>¡Desbloquea tu futuro ahora!</h1>
+                <p>
+                  Explora recursos y herramientas para ti: <br />
+                  ✔ Aprende lo básico hasta lo avanzado. <br />
+                  ✔ Mejora tus habilidades a tu ritmo. <br />
+                  ✔ Construye el camino hacia tus metas. <br />
+                  📲 ¡Empieza a crecer hoy!
+                </p>
+              </section>
+            </section>
+          </main>
+
+          <footer>
+            <section className="pieportada">
+              <section className="sub1pieportada">
+                {/* Información general */}
+                <div className="infoportada">
+                  <h3>Sobre Nosotros</h3>
+                  <p>
+                    Enseñamos cursos gratuitos para inicial, primaria, secundaria, inglés y programación (frontend-backend).
+                  </p>
+                  {/* Texto adicional */}
+                  <div className={mostrarContenido ? "mostrarportada" : "ocultarportada"}>
+                    {/* Enlaces rápidos */}
+                    <div className='informacionportada'>
+                      <div className="enlacesportada">
+                        <h3>Categorías</h3>
+                        <ul>
+                          <li><a href="#inicial">Inicial</a></li>
+                          <li><a href="#primaria">Primaria</a></li>
+                          <li><a href="#secundaria">Secundaria</a></li>
+                          <li><a href="#ingles">Inglés</a></li>
+                          <li><a href="#programacion">Programación</a></li>
+                        </ul>
+                      </div>
+
+                      {/* Redes sociales */}
+                      <div className="redesportada">
+                        <h3>Síguenos</h3>
+                        <div className="iconsportada">
+                          <a href="#" title="Facebook" aria-label="Facebook">
+                            <Image src="/facebook.png" alt="Facebook" width={24} height={24} />
+                          </a>
+                          
+                          <a href="#" title="Twitter" aria-label="Twitter">
+                            <Image src="/twiter.png" alt="Twitter" width={24} height={24} />
+                          </a>
+                          
+                          <a href="#" title="Instagram" aria-label="Instagram">
+                            <Image src="/instagram.png" alt="Instagram" width={24} height={24} />
+                          </a>
+                          
+                          <a href="#" title="WhatsApp" aria-label="WhatsApp">
+                            <Image src="/wasap.png" alt="WhatsApp" width={24} height={24} />
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                  </section>
-                  
-             </nav>
-        
+                  </div>
+                  {/* Flecha para mostrar/ocultar el contenido */}
+                  <span className="flechaportada" onClick={toggleContenido}>
+                    {mostrarContenido ? "▲" : "▼"}
+                  </span>
+                </div>
+                <div className="enlacesportada">
+                  <h3>Categorías</h3>
+                  <ul>
+                    <li><a href="#inicial">Inicial</a></li>
+                    <li><a href="#primaria">Primaria</a></li>
+                    <li><a href="#secundaria">Secundaria</a></li>
+                    <li><a href="#ingles">Inglés</a></li>
+                    <li><a href="#programacion">Programación</a></li>
+                  </ul>
+                </div>
 
-
-
-    <main className="cuerpoportada">
-  <section className="sub1cuerpoportada relative w-full overflow-hidden bg-black">
-    {/* Fondo: Spline o imagen móvil */}
-    {isMobile ? (
-      <Image
-        src="https://cdn.pixabay.com/photo/2017/01/31/13/14/robot-2027195_1280.png"
-        alt="Fallback móvil"
-        fill
-        className="object-cover pointer-events-none z-0"
-        priority
-        sizes="100vw"
-      />
-    ) : (
-      <>
-        <spline-viewer
-          url="https://prod.spline.design/fNAfkERP-hlFefcl/scene.splinecode"
-          className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
-        />
-        {/* Parche para cubrir figura circular en esquina inferior derecha */}
-        <div className="absolute bottom-0 right-0 w-40 h-40 bg-black z-10"></div>
-      </>
-    )}
-
-    {/* Contenido encima del fondo */}
-    <section className="espaciosub1cuerpoportada relative z-20"></section>
-    <section className="cuadro1sub1cuerpoportada relative z-20 text-white text-center">
-      <h1>¡Desbloquea tu futuro ahora!</h1>
-      <p>
-        Explora recursos y herramientas para ti: <br />
-        ✔ Aprende lo básico hasta lo avanzado. <br />
-        ✔ Mejora tus habilidades a tu ritmo. <br />
-        ✔ Construye el camino hacia tus metas. <br />
-        📲 ¡Empieza a crecer hoy!
-      </p>
-    </section>
-  </section>
-</main>
-
-        
-             <footer>
-               <section className="pieportada">
-                 <section className="sub1pieportada">
-                   {/* Información general */}
-                   <div className="infoportada">
-                     <h3>Sobre Nosotros</h3>
-                     <p>
-                       Enseñamos cursos gratuitos para inicial, primaria, secundaria, inglés y programación (frontend-backend).
-                     </p>
-                     {/* Texto adicional */}
-                     <div className={mostrarContenido ? "mostrarportada" : "ocultarportada"}>
-                       {/* Enlaces rápidos */}
-                       <div className='informacionportada'>
-                         <div className="enlacesportada">
-                           <h3>Categorías</h3>
-                           <ul>
-                             <li><a href="#inicial">Inicial</a></li>
-                             <li><a href="#primaria">Primaria</a></li>
-                             <li><a href="#secundaria">Secundaria</a></li>
-                             <li><a href="#ingles">Inglés</a></li>
-                             <li><a href="#programacion">Programación</a></li>
-                           </ul>
-                         </div>
-        
-                         {/* Redes sociales */}
-                         <div className="redesportada">
-                           <h3>Síguenos</h3>
-                           <div className="iconsportada">
-                           <a href="#" title="Facebook" aria-label="Facebook">
-          <Image src="/facebook.png" alt="Facebook" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="Twitter" aria-label="Twitter">
-          <Image src="/twiter.png" alt="Twitter" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="Instagram" aria-label="Instagram">
-          <Image src="/instagram.png" alt="Instagram" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="WhatsApp" aria-label="WhatsApp">
-          <Image src="/wasap.png" alt="WhatsApp" width={24} height={24} />
-        </a>
-        
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                     {/* Flecha para mostrar/ocultar el contenido */}
-                     <span className="flechaportada" onClick={toggleContenido}>
-                       {mostrarContenido ? "▲" : "▼"}
-                     </span>
-                   </div>
-                   <div className="enlacesportada">
-                     <h3>Categorías</h3>
-                     <ul>
-                       <li><a href="#inicial">Inicial</a></li>
-                       <li><a href="#primaria">Primaria</a></li>
-                       <li><a href="#secundaria">Secundaria</a></li>
-                       <li><a href="#ingles">Inglés</a></li>
-                       <li><a href="#programacion">Programación</a></li>
-                     </ul>
-                   </div>
-        
-                   {/* Redes sociales */}
-                   <div className="redesportada">
-                     <h3>Síguenos</h3>
-                     <div className="iconsportada">
-                     <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook">
-          <Image src="/facebook.png" alt="Facebook" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="Twitter" aria-label="Twitter">
-          <Image src="/twiter.png" alt="Twitter" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="Instagram" aria-label="Instagram">
-          <Image src="/instagram.png" alt="Instagram" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="WhatsApp" aria-label="WhatsApp">
-          <Image src="/wasap.png" alt="WhatsApp" width={24} height={24} />
-        </a>
-        
-                     </div>
-                   </div>
-                 </section>
-               </section>
-             </footer>
-           </div>
+                {/* Redes sociales */}
+                <div className="redesportada">
+                  <h3>Síguenos</h3>
+                  <div className="iconsportada">
+                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook">
+                      <Image src="/facebook.png" alt="Facebook" width={24} height={24} />
+                    </a>
+                    
+                    <a href="#" title="Twitter" aria-label="Twitter">
+                      <Image src="/twiter.png" alt="Twitter" width={24} height={24} />
+                    </a>
+                    
+                    <a href="#" title="Instagram" aria-label="Instagram">
+                      <Image src="/instagram.png" alt="Instagram" width={24} height={24} />
+                    </a>
+                    
+                    <a href="#" title="WhatsApp" aria-label="WhatsApp">
+                      <Image src="/wasap.png" alt="WhatsApp" width={24} height={24} />
+                    </a>
+                  </div>
+                </div>
+              </section>
+            </section>
+          </footer>
+        </div>
       )}
     </main>
   );
