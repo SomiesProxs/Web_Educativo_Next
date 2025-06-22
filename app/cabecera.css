@@ -50,7 +50,6 @@ font-size: 20px;
 /*Cabeza2*/  
 .sub1cabeza2portada{
   width: 100%;
-  height: 40px;
   background: white;
   display: flex;
   justify-content: center;
@@ -213,7 +212,6 @@ margin-right: 20px;
 /*Cabeza2*/ 
 .sub1cabeza2portada {
 border: none;
-height: 40px;
 background: #a0753a;
 justify-content: flex-start;
 }
@@ -234,6 +232,7 @@ position: absolute;
 right: 0;
 background: #a0753a;
 width: 200px;
+height: 800px;
 padding: 10px;
 transform: translateX(0);
 opacity: 0;
@@ -281,42 +280,41 @@ opacity: 1;
 /*Cabeza2*/ 
 .sub1cabeza2portada {
   border: none;
-  height: 60px;
-  justify-content:flex-start;
   background: #a0753a;
-}
-
-.hamburguesaportada {
+  justify-content: flex-start;
+  }
+  .sub1cabeza2portada {
+    width: 100%;
+  }
+  
+  .hamburguesaportada {
   transform: translateX(25px);
   display: block;
-  font-size:220%;
-}
-
-/* Menú desplegable */
-.menusub1cabeza2portada {
+  }
+  
+  /* Menú desplegable */
+  .menusub1cabeza2portada {
   flex-direction: column;
   align-items: flex-start;
   position: absolute;
   right: 0;
   background: #a0753a;
-  width: 300px;
-  padding: 20px;
-  transform: translateX(100);
+  width: 200px;
+  height: 100%;
+  padding: 10px;
+  transform: translateX(0);
   opacity: 0;
   transition: transform 0.5s ease, opacity 0.5s ease;
   z-index: 10;
-}
-
-/* Cuando el menú es visible */
-.menusub1cabeza2portada.visible {
+  }
+  
+  /* Cuando el menú es visible */
+  .menusub1cabeza2portada.visible {
   transform: translateX(0);
   opacity: 1;
-}
-
-.menusub1cabeza2portada a {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 22px;
-  text-align: left;
-}
+  }
+  .menusub1cabeza2portada a{
+    padding: 0;
+  }
 
 }

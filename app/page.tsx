@@ -7,11 +7,14 @@ import { getSession } from "next-auth/react";
 import Image from 'next/image';
 import Hero from '@/components/Hero';
 
-
 import './cabecera.css';
 import './portada.css';
 import './pie.css';
 
+type Nivel = {
+  nombre: string;
+  ruta: string;
+};
 
 const Bienvenida = () => {
   const [showAnimation, setShowAnimation] = useState(true);
@@ -19,7 +22,29 @@ const Bienvenida = () => {
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  
+  // Estado para el menú desplegable
+  // Estado para mostrar/ocultar contenido adicional
+  const [mostrarContenido, setMostrarContenido] = useState<boolean>(false);
+
+  //animacion con spline
+   const [isMobile, setIsMobile] = useState(false);
+const [niveles, setNiveles] = useState<Nivel[]>([]);
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchNiveles = async () => {
+      try {
+        const res = await fetch("/api/niveles");
+        const data = await res.json();
+        setNiveles(data.niveles);
+      } catch (err) {
+        console.error("Error al cargar niveles:", err);
+      }
+    };
+    fetchNiveles();
+  }, []);
+
+
   useEffect(() => {
     const fetchProfileImage = async () => {
       if (!session?.user?.email) return;
@@ -48,11 +73,7 @@ const Bienvenida = () => {
     fetchSession();
   }, []);
   
-   // Estado para el menú desplegable
-   const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  
-   // Estado para mostrar/ocultar contenido adicional
-   const [mostrarContenido, setMostrarContenido] = useState<boolean>(false);
+
   
    // Recargar la página
    const handleReload = () => {
@@ -88,7 +109,15 @@ const Bienvenida = () => {
    const handleAnimationComplete = () => {
      setAnimationCompleted(true);
    };
- 
+ //spline
+ useEffect(() => {
+    import('@splinetool/viewer');
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
    return (
      <main>
        {showAnimation && !animationCompleted ? (
@@ -185,52 +214,70 @@ const Bienvenida = () => {
         </a>
               )}
             </div>
-        
-        
-        
-        
-        
-        
-        
-        
                    </section>
-                    
-        
                  </section>
                </section>
         
-               <section className="cabeza2portada">
+
                  <section className="sub1cabeza2portada">
-                   {/* Botón de hamburguesa */}
-                   <div className="hamburguesaportada" onClick={toggleMenu}>
-                     &#9776;
-                   </div>
-        
-                   {/* Menú desplegable */}
-                   <div className={`menusub1cabeza2portada ${menuVisible ? 'visible' : ''}`}>
-                     <a href="/inicial">Inicial</a>
-                     <a href="/primaria">Primaria</a>
-                     <a href="/secundaria">Secundaria</a>
-                     <a href="/ingles">Ingles</a>
-                     <a href="/programacion">Programación</a>
-                   </div>
-                 </section>
-               </section>
+                    {/* Botón de hamburguesa */}
+                    <div className="hamburguesaportada" onClick={toggleMenu}>
+                      &#9776;
+                    </div>
+
+                    {/* Menú desplegable */}
+                    <div className={`menusub1cabeza2portada ${menuVisible ? 'visible' : ''}`}>
+                      {niveles.map((nivel) => (
+                        <a
+                          key={nivel.nombre}
+                          href={`/Niveles/${nivel.nombre.toLowerCase().replace(/\s+/g, '')}`}
+                        >
+                          {nivel.nombre}
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                  
              </nav>
         
-             <main className="cuerpoportada">
-               <section className="sub1cuerpoportada">
-                 <section className='espaciosub1cuerpoportada'></section>
-                 <section className="cuadro1sub1cuerpoportada">
-                   <h1>¡Desbloquea tu futuro ahora!</h1>
-                   <p>Explora recursos y herramientas para ti: <br />
-                   ✔ Aprende lo básico hasta lo avanzado.  <br />
-                   ✔ Mejora tus habilidades a tu ritmo.  <br />
-                   ✔ Construye el camino hacia tus metas.  <br />
-                   📲 ¡Empieza a crecer hoy!</p>
-                 </section>
-               </section>
-             </main>
+
+
+
+    <main className="cuerpoportada">
+      <section className="sub1cuerpoportada relative w-full overflow-hidden bg-black">
+        {/* Fondo: Spline o imagen móvil */}
+        {isMobile ? (
+          <img
+            src="https://cdn.pixabay.com/photo/2017/01/31/13/14/robot-2027195_1280.png"
+            alt="Fallback móvil"
+            className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none z-0"
+          />
+        ) : (
+          <>
+            <spline-viewer
+              url="https://prod.spline.design/fNAfkERP-hlFefcl/scene.splinecode"
+              className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
+            />
+            {/* Parche para cubrir figura circular en esquina inferior derecha */}
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-black z-10"></div>
+          </>
+        )}
+
+        {/* Contenido encima del fondo */}
+        <section className="espaciosub1cuerpoportada relative z-20"></section>
+        <section className="cuadro1sub1cuerpoportada relative z-20 text-white text-center">
+          <h1>¡Desbloquea tu futuro ahora!</h1>
+          <p>
+            Explora recursos y herramientas para ti: <br />
+            ✔ Aprende lo básico hasta lo avanzado. <br />
+            ✔ Mejora tus habilidades a tu ritmo. <br />
+            ✔ Construye el camino hacia tus metas. <br />
+            📲 ¡Empieza a crecer hoy!
+          </p>
+        </section>
+      </section>
+    </main>
+
         
              <footer>
                <section className="pieportada">

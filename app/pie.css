@@ -132,6 +132,7 @@ ul li a:hover {
 @media (min-width: 568px) and (max-width: 900px){
     .sub1pieportada{
         padding: 14px;
+        z-index: 10;
     }
     
     h3 {

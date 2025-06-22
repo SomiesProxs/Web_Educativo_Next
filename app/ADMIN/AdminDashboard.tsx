@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import "./fondocargar.css";
+import Cursos from './ComponenteAdmin/Cursos';
+import CI1 from "./ComponenteAdmin/CREARINFORMACION/CI1";
 
 // Tipado de usuario
 interface User {
@@ -14,11 +16,6 @@ interface User {
 }
 
 const AdminDashboard = () => {
-//crear cursos:   
-const [titulo, setTitulo] = useState("");
-const [curso, setCurso] = useState("Matemática");
-const [modalVisible, setModalVisible] = useState(false);
-const [modalMessage, setModalMessage] = useState("");
   
   
   const [activeTab, setActiveTab] = useState("usuarios");
@@ -46,6 +43,11 @@ const [modalMessage, setModalMessage] = useState("");
     phone: 0,
     stars: 0,
   });
+
+  //nuevo nivel
+  
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [nuevoNivel, setNuevoNivel] = useState('');
 
   // Cargar usuarios
   const fetchUsers = async (page: number, query: string) => {
@@ -193,42 +195,37 @@ const [modalMessage, setModalMessage] = useState("");
       </div>
     );
   }
-  const crearActividad = async () => {
-    // Realizar la solicitud para crear la actividad
-    const res = await fetch("/api/actividad", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nivel: "inicial", // Asegúrate de pasar el nivel correcto aquí
-        curso,
-        titulo,
-      }),
-    });
   
-    const data = await res.json();
-  
-    if (res.ok) {
-      // Verifica el tipo de mensaje del servidor
-      if (data.message === "Actividad creada") {
-        // Si la respuesta es "Actividad creada", significa que el curso ya existía
-        setModalMessage("Actividad creada");
-      } else {
-        // Si el mensaje es "Curso y actividad creados"
-        setModalMessage("Curso y actividad creados");
-      }
-  
-      // Mostrar el modal
-      setModalVisible(true);
-      setTitulo(""); // Limpiar el campo título después de crear la actividad
-    } else {
-      // Si hay un error, muestra el mensaje en el modal
-      setModalMessage("Error: " + data.message);
-      setModalVisible(true);
-    }
+
+//moda del crear nivel
+const handleCrearNivel = () => {
+    setModalAbierto(true);
   };
-  
 
+const handleGuardarNivel = async () => {
+  if (!nuevoNivel.trim()) return;
 
+  try {
+    const response = await fetch('/api/crear-nivel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombreNivel: nuevoNivel }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert(`✅ Nivel "${nuevoNivel}" creado`);
+      setModalAbierto(false);
+      setNuevoNivel('');
+    } else {
+      alert(`❌ ${data.error}`);
+    }
+  } catch (err) {
+    alert('❌ Error al crear el nivel');
+    console.error(err);
+  }
+};
 
   return (
     <div className={`flex flex-col md:flex-row min-h-screen bg-gray-100 dark:bg-gray-900 text-black dark:text-white transition-colors duration-300 ${localTheme === 1 ? "bg-red-600 text-white" : "bg-blue-600 text-black"}`}>
@@ -255,7 +252,7 @@ const [modalMessage, setModalMessage] = useState("");
           </div>
         </div>
         <nav className="mt-6">
-          {["usuarios", "inicial", "ordenes", "configuracion"].map((tab) => (
+          {["usuarios", "nivel", "crear Informacion", "ordenes", "configuracion"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -435,69 +432,69 @@ const [modalMessage, setModalMessage] = useState("");
           </>
         )}
 
-        {activeTab === "inicial" && (
-           <div>
-           <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-             <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
-               Gestión Inicial
-             </h2>
-     
-             <label
-               htmlFor="titulo"
-               className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
-             >
-               Título de la Actividad
-             </label>
-             <input
-               id="titulo"
-               className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white p-2 mb-4 w-full rounded"
-               placeholder="Ej. Sumas Básicas"
-               value={titulo}
-               onChange={(e) => setTitulo(e.target.value)}
-             />
-     
-             <label
-               htmlFor="curso"
-               className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
-             >
-               Selecciona un Curso
-             </label>
-             <select
-               id="curso"
-               value={curso}
-               onChange={(e) => setCurso(e.target.value)}
-               className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white p-2 mb-4 w-full rounded"
-             >
-               <option value="Matemática">Matemática</option>
-               <option value="Comunicación">Comunicación</option>
-               {/* Agrega más cursos si es necesario */}
-             </select>
-     
-             <button
-               onClick={crearActividad}
-               className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition"
-             >
-               Crear Actividad
-             </button>
-           </div>
-     
-           {/* Modal */}
-           {modalVisible && (
-             <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md max-w-lg w-full">
-                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200">
-                   {modalMessage}
-                 </h3>
-                 <button
-                   onClick={() => setModalVisible(false)}
-                   className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
-                 >
-                   Cerrar
-                 </button>
-               </div>
-             </div>
-           )}
-         </div>
+{activeTab === "nivel" && (
+  <div className={`relative flex flex-col justify-center items-center p-10 rounded-lg shadow-lg text-center max-w-4xl mx-auto ${localTheme === 1 ? "bg-[#172644]" : "bg-[#c7e6e8]"}`}>
+
+    {/* Título de la Sección */}
+    <h2 className="text-4xl font-extrabold mb-6">
+      Crear Nuevo Curso
+    </h2>
+
+    {/* Descripción breve */}
+    <p className="text-lg mb-8">
+      Esta es la sección donde podrás crear, ver y administrar los niveles. Completa los siguientes campos para añadir un nuevo curso a nuestra nivel en la plataforma.
+    </p>
+
+<button
+        onClick={handleCrearNivel}
+        className="absolute top-4 right-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+      >
+        Crear Nivel
+      </button>
+
+      {/* Modal */}
+      {modalAbierto && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-semibold mb-4">Crear nuevo nivel</h2>
+            <input
+              type="text"
+              placeholder="Nuevo Nivel"
+              value={nuevoNivel}
+              onChange={(e) => setNuevoNivel(e.target.value.toUpperCase())}
+              className="w-full px-4 py-2 border rounded mb-4"
+            />
+            <button
+              onClick={handleGuardarNivel}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Guardar
+            </button>
+            <button
+              onClick={() => setModalAbierto(false)}
+              className="ml-4 text-gray-600 hover:underline"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      
+    {/* Aquí llamamos al componente Cursos */}
+    <div className={`p-8 rounded-lg w-full min-h-screen overflow-auto ${localTheme === 1 ? "bg-[#202c44]" : "bg-[#d5e9ea]"}`}>
+  <Cursos />
+</div>
+
+  </div>
+)}
+
+
+
+        {activeTab === "crear Informacion" && (
+          <div>
+            <CI1 />
+          </div>
         )}
 
         {activeTab === "ordenes" && (
