@@ -244,39 +244,42 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
 
 
     <main className="cuerpoportada">
-      <section className="sub1cuerpoportada relative w-full overflow-hidden bg-black">
-        {/* Fondo: Spline o imagen móvil */}
-        {isMobile ? (
-          <img
-            src="https://cdn.pixabay.com/photo/2017/01/31/13/14/robot-2027195_1280.png"
-            alt="Fallback móvil"
-            className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none z-0"
-          />
-        ) : (
-          <>
-            <spline-viewer
-              url="https://prod.spline.design/fNAfkERP-hlFefcl/scene.splinecode"
-              className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
-            />
-            {/* Parche para cubrir figura circular en esquina inferior derecha */}
-            <div className="absolute bottom-0 right-0 w-40 h-40 bg-black z-10"></div>
-          </>
-        )}
+  <section className="sub1cuerpoportada relative w-full overflow-hidden bg-black">
+    {/* Fondo: Spline o imagen móvil */}
+    {isMobile ? (
+      <Image
+        src="https://cdn.pixabay.com/photo/2017/01/31/13/14/robot-2027195_1280.png"
+        alt="Fallback móvil"
+        fill
+        className="object-cover pointer-events-none z-0"
+        priority
+        sizes="100vw"
+      />
+    ) : (
+      <>
+        <spline-viewer
+          url="https://prod.spline.design/fNAfkERP-hlFefcl/scene.splinecode"
+          className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
+        />
+        {/* Parche para cubrir figura circular en esquina inferior derecha */}
+        <div className="absolute bottom-0 right-0 w-40 h-40 bg-black z-10"></div>
+      </>
+    )}
 
-        {/* Contenido encima del fondo */}
-        <section className="espaciosub1cuerpoportada relative z-20"></section>
-        <section className="cuadro1sub1cuerpoportada relative z-20 text-white text-center">
-          <h1>¡Desbloquea tu futuro ahora!</h1>
-          <p>
-            Explora recursos y herramientas para ti: <br />
-            ✔ Aprende lo básico hasta lo avanzado. <br />
-            ✔ Mejora tus habilidades a tu ritmo. <br />
-            ✔ Construye el camino hacia tus metas. <br />
-            📲 ¡Empieza a crecer hoy!
-          </p>
-        </section>
-      </section>
-    </main>
+    {/* Contenido encima del fondo */}
+    <section className="espaciosub1cuerpoportada relative z-20"></section>
+    <section className="cuadro1sub1cuerpoportada relative z-20 text-white text-center">
+      <h1>¡Desbloquea tu futuro ahora!</h1>
+      <p>
+        Explora recursos y herramientas para ti: <br />
+        ✔ Aprende lo básico hasta lo avanzado. <br />
+        ✔ Mejora tus habilidades a tu ritmo. <br />
+        ✔ Construye el camino hacia tus metas. <br />
+        📲 ¡Empieza a crecer hoy!
+      </p>
+    </section>
+  </section>
+</main>
 
         
              <footer>

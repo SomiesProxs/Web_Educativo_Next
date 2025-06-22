@@ -2,9 +2,36 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { NextRequest } from "next/server";
 
+// Type definitions
+interface Subtema {
+  nombre: string;
+  contenido?: string;
+  imagenes?: string[];
+  estado?: number;
+}
+
+interface Titulo {
+  titulo: string;
+  estado: number;
+  subtemas: Subtema[];
+}
+
+interface CursoData {
+  nivel: string;
+  curso: string;
+  titulos: Titulo[];
+}
+
+interface RequestBody {
+  nivel: string;
+  curso: string;
+  titulo: string;
+  subtema: string;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const { nivel, curso, titulo, subtema } = await req.json();
+    const { nivel, curso, titulo, subtema }: RequestBody = await req.json();
 
     // Validación básica
     if (!nivel || !curso || !titulo || !subtema) {
@@ -16,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
-    const collection = db.collection("Cursos");
+    const collection = db.collection<CursoData>("Cursos");
 
     const cursoData = await collection.findOne({ nivel, curso });
 
@@ -28,7 +55,7 @@ export async function POST(req: NextRequest) {
     }
 
     const tituloData = cursoData.titulos.find(
-      (item: any) => item.titulo === titulo
+      (item: Titulo) => item.titulo === titulo
     );
 
     if (!tituloData) {
@@ -39,7 +66,7 @@ export async function POST(req: NextRequest) {
     }
 
     const subtemaData = tituloData.subtemas.find(
-      (item: any) => item.nombre === subtema
+      (item: Subtema) => item.nombre === subtema
     );
 
     if (!subtemaData) {

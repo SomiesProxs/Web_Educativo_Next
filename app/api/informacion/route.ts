@@ -1,5 +1,50 @@
 import { NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
+
+// Type definitions
+interface Subtema {
+  _id?: string | ObjectId;
+  nombre: string;
+  contenido?: string;
+  imagenes?: string[];
+  estado?: number;
+}
+
+interface Titulo {
+  titulo: string;
+  estado: number;
+  subtemas?: Subtema[];
+}
+
+interface Curso {
+  _id: ObjectId;
+  nivel: string;
+  curso: string;
+  titulos?: Titulo[];
+  creadoEn?: Date;
+}
+
+interface QueryFilter {
+  nivel?: string;
+  curso?: string;
+}
+
+interface ResultItem {
+  _id: string;
+  nivel: string;
+  curso: string;
+  titulo: string;
+  estado: number;
+  subtemas: Array<{
+    nombre: string;
+    contenido: string;
+    imagenes: string[];
+    _id: string;
+    estado?: number;
+  }>;
+  creadoEn: string;
+  error?: string;
+}
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -22,10 +67,10 @@ export async function GET(req: Request) {
     console.log('Conectado a MongoDB');
     
     const db = client.db(process.env.MONGODB_DB);
-    const collection = db.collection('Cursos');
+    const collection = db.collection<Curso>('Cursos');
     
     // Construir la consulta dependiendo de los parámetros
-    const query: any = {};
+    const query: QueryFilter = {};
     
     if (nivel) query.nivel = nivel;
     if (curso) query.curso = curso;
@@ -41,8 +86,9 @@ export async function GET(req: Request) {
       if (!nivel) {
         const todosLosNiveles = await collection.distinct('nivel');
         if (todosLosNiveles.length > 0) {
-          const resultadosNiveles = todosLosNiveles.map(nivel => ({
-            nivel,
+          const resultadosNiveles: ResultItem[] = todosLosNiveles.map(nivelItem => ({
+            _id: `nivel-${nivelItem}`,
+            nivel: nivelItem,
             curso: '',
             titulo: 'Sin títulos disponibles',
             estado: 0,
@@ -59,12 +105,12 @@ export async function GET(req: Request) {
     }
     
     // Procesar los resultados según los parámetros solicitados
-    let result: any[] = [];
+    let result: ResultItem[] = [];
     
     if (titulo) {
       // Si se solicita un título específico, filtrar y devolver solo ese título
       cursos.forEach((curso) => {
-        const tituloEncontrado = curso.titulos?.find((t: any) => t.titulo === titulo);
+        const tituloEncontrado = curso.titulos?.find((t: Titulo) => t.titulo === titulo);
         
         if (tituloEncontrado) {
           result.push({
@@ -73,7 +119,7 @@ export async function GET(req: Request) {
             curso: curso.curso,
             titulo: tituloEncontrado.titulo,
             estado: tituloEncontrado.estado,
-            subtemas: tituloEncontrado.subtemas ? tituloEncontrado.subtemas.map((subtema: any, index: number) => ({
+            subtemas: tituloEncontrado.subtemas ? tituloEncontrado.subtemas.map((subtema: Subtema, index: number) => ({
               nombre: subtema.nombre,
               contenido: subtema.contenido || '',
               imagenes: Array.isArray(subtema.imagenes) ? subtema.imagenes : [],
@@ -87,15 +133,15 @@ export async function GET(req: Request) {
       // MOSTRAR TODOS LOS TÍTULOS, sin filtrar por estado
       cursos.forEach((curso) => {
         if (curso.titulos && curso.titulos.length > 0) {
-          curso.titulos.forEach((titulo: any) => {
+          curso.titulos.forEach((tituloItem: Titulo) => {
             // ELIMINAR el filtro de estado - mostrar todos los títulos
             result.push({
               _id: curso._id.toString(),
               nivel: curso.nivel,
               curso: curso.curso,
-              titulo: titulo.titulo,
-              estado: titulo.estado, // Mantener el estado original (0 o 1)
-              subtemas: titulo.subtemas ? titulo.subtemas.map((subtema: any, index: number) => ({
+              titulo: tituloItem.titulo,
+              estado: tituloItem.estado, // Mantener el estado original (0 o 1)
+              subtemas: tituloItem.subtemas ? tituloItem.subtemas.map((subtema: Subtema, index: number) => ({
                 nombre: subtema.nombre,
                 contenido: subtema.contenido || '',
                 imagenes: Array.isArray(subtema.imagenes) ? subtema.imagenes : [],
