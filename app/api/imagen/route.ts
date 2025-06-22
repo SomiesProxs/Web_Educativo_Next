@@ -3,12 +3,75 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { v2 as cloudinary } from "cloudinary";
+import { Db } from "mongodb";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// Define interfaces for your data structures
+interface ImagenBase64 {
+  base64: string;
+  name: string;
+}
+
+interface ImagenGuardada {
+  id: number;
+  name: string;
+  originalName: string;
+  url: string;
+  publicId: string;
+  uploadedAt: string;
+}
+
+interface Subtema {
+  nombre: string;
+  nombreLimpio: string;
+  contenido: string;
+  imagenes: ImagenGuardada[];
+}
+
+interface Titulo {
+  titulo: string;
+  tituloLimpio: string;
+  estado: number;
+  subtemas: Subtema[];
+}
+
+interface CursoDocument {
+  _id?: string;
+  nivel: string;
+  curso: string;
+  titulos: Titulo[];
+  creadoEn: Date;
+}
+
+interface PostRequestBody {
+  nivel: string;
+  curso: string;
+  titulo: string;
+  subtema: string;
+  nuevasImagenesBase64: ImagenBase64[];
+}
+
+interface DeleteRequestBody {
+  nivel: string;
+  curso: string;
+  titulo: string;
+  subtema: string;
+  indexImagen: number;
+}
+
+interface PutRequestBody {
+  nivel: string;
+  curso: string;
+  titulo: string;
+  subtema: string;
+  indexImagen: number;
+  nuevaImagen: ImagenBase64;
+}
 
 // Función para extraer public_id de una URL de Cloudinary
 function extractPublicId(url: string): string | null {
@@ -50,14 +113,14 @@ function generateUniqueFileName(originalName: string): string {
 }
 
 async function updateImagenes(
-  db: any,
+  db: Db,
   nivel: string,
   curso: string,
   titulo: string,
   subtemaNombre: string,
-  imagenes: any[]
+  imagenes: ImagenGuardada[]
 ) {
-  const collection = db.collection("Cursos");
+  const collection = db.collection<CursoDocument>("Cursos");
 
   // Filtro corregido según la estructura real
   const filter = {
@@ -85,7 +148,7 @@ async function updateImagenes(
 // POST: Subir imágenes nuevas
 export async function POST(req: Request) {
   try {
-    const { nivel, curso, titulo, subtema, nuevasImagenesBase64 } = await req.json();
+    const { nivel, curso, titulo, subtema, nuevasImagenesBase64 }: PostRequestBody = await req.json();
 
     // Validaciones
     if (
@@ -114,7 +177,7 @@ export async function POST(req: Request) {
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
-    const collection = db.collection("Cursos");
+    const collection = db.collection<CursoDocument>("Cursos");
 
     // Buscar el documento correcto según la estructura real
     const cursoDoc = await collection.findOne({
@@ -127,12 +190,12 @@ export async function POST(req: Request) {
     }
 
     // Buscar el título y subtema en la estructura correcta
-    const tituloObj = cursoDoc.titulos?.find((t: any) => t.titulo === titulo);
+    const tituloObj = cursoDoc.titulos?.find((t: Titulo) => t.titulo === titulo);
     if (!tituloObj) {
       return NextResponse.json({ message: "Título no encontrado" }, { status: 404 });
     }
 
-    const subtemaObj = tituloObj.subtemas?.find((s: any) => s.nombre === subtema);
+    const subtemaObj = tituloObj.subtemas?.find((s: Subtema) => s.nombre === subtema);
     if (!subtemaObj) {
       return NextResponse.json({ message: "Subtema no encontrado" }, { status: 404 });
     }
@@ -143,7 +206,7 @@ export async function POST(req: Request) {
 
     // Subir imágenes a Cloudinary con transformaciones
     const nuevasImagenes = await Promise.all(
-      nuevasImagenesBase64.map(async (img: any) => {
+      nuevasImagenesBase64.map(async (img: ImagenBase64) => {
         const uniqueFileName = generateUniqueFileName(img.name);
         const publicId = uniqueFileName.split('.')[0];
 
@@ -202,7 +265,7 @@ export async function POST(req: Request) {
 // DELETE: Eliminar una imagen por índice
 export async function DELETE(req: Request) {
   try {
-    const { nivel, curso, titulo, subtema, indexImagen } = await req.json();
+    const { nivel, curso, titulo, subtema, indexImagen }: DeleteRequestBody = await req.json();
 
     if (
       !nivel || !curso || !titulo || !subtema || 
@@ -216,7 +279,7 @@ export async function DELETE(req: Request) {
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
-    const collection = db.collection("Cursos");
+    const collection = db.collection<CursoDocument>("Cursos");
 
     // Buscar el documento correcto
     const cursoDoc = await collection.findOne({
@@ -228,12 +291,12 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ message: "Curso no encontrado" }, { status: 404 });
     }
 
-    const tituloObj = cursoDoc.titulos?.find((t: any) => t.titulo === titulo);
+    const tituloObj = cursoDoc.titulos?.find((t: Titulo) => t.titulo === titulo);
     if (!tituloObj) {
       return NextResponse.json({ message: "Título no encontrado" }, { status: 404 });
     }
 
-    const subtemaObj = tituloObj.subtemas?.find((s: any) => s.nombre === subtema);
+    const subtemaObj = tituloObj.subtemas?.find((s: Subtema) => s.nombre === subtema);
     if (!subtemaObj) {
       return NextResponse.json({ message: "Subtema no encontrado" }, { status: 404 });
     }
@@ -283,7 +346,7 @@ export async function DELETE(req: Request) {
 // PUT: Reemplazar imagen en un índice específico
 export async function PUT(req: Request) {
   try {
-    const { nivel, curso, titulo, subtema, indexImagen, nuevaImagen } = await req.json();
+    const { nivel, curso, titulo, subtema, indexImagen, nuevaImagen }: PutRequestBody = await req.json();
 
     if (
       !nivel || !curso || !titulo || !subtema ||
@@ -306,7 +369,7 @@ export async function PUT(req: Request) {
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
-    const collection = db.collection("Cursos");
+    const collection = db.collection<CursoDocument>("Cursos");
 
     // Buscar el documento correcto
     const cursoDoc = await collection.findOne({
@@ -318,12 +381,12 @@ export async function PUT(req: Request) {
       return NextResponse.json({ message: "Curso no encontrado" }, { status: 404 });
     }
 
-    const tituloObj = cursoDoc.titulos?.find((t: any) => t.titulo === titulo);
+    const tituloObj = cursoDoc.titulos?.find((t: Titulo) => t.titulo === titulo);
     if (!tituloObj) {
       return NextResponse.json({ message: "Título no encontrado" }, { status: 404 });
     }
 
-    const subtemaObj = tituloObj.subtemas?.find((s: any) => s.nombre === subtema);
+    const subtemaObj = tituloObj.subtemas?.find((s: Subtema) => s.nombre === subtema);
     if (!subtemaObj) {
       return NextResponse.json({ message: "Subtema no encontrado" }, { status: 404 });
     }

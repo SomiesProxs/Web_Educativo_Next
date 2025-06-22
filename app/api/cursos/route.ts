@@ -1,6 +1,40 @@
 import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
 
+// Define interfaces for your data structures
+interface SubtemaInput {
+  nombre: string;
+  nombreLimpio: string;
+  contenido: string;
+  imagenes: string[];
+}
+
+interface TituloInput {
+  titulo: string;
+  estado: number;
+  subtemas: string[];
+}
+
+interface TituloFormateado {
+  titulo: string;
+  tituloLimpio: string;
+  estado: number;
+  subtemas: SubtemaInput[];
+}
+
+interface RequestBody {
+  nivel: string;
+  curso: string;
+  titulos: TituloInput[];
+}
+
+interface NuevoCurso {
+  nivel: string;
+  curso: string;
+  titulos: TituloFormateado[];
+  creadoEn: Date;
+}
+
 function limpiarNombreArchivo(nombre: string): string {
   return nombre
     .replace(/[¿?¡!:*<>|"]/g, '')
@@ -14,7 +48,7 @@ export async function POST(req: Request) {
   let client: MongoClient | null = null;
 
   try {
-    const { nivel, curso, titulos } = await req.json();
+    const { nivel, curso, titulos }: RequestBody = await req.json();
 
     if (!nivel || !curso || !Array.isArray(titulos) || titulos.length === 0) {
       return NextResponse.json(
@@ -23,7 +57,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const titulosFormateados = titulos.map((tituloObj: any) => {
+    const titulosFormateados = titulos.map((tituloObj: TituloInput) => {
       const { titulo, estado, subtemas } = tituloObj;
 
       if (!titulo || typeof estado !== 'number' || !Array.isArray(subtemas)) {
@@ -43,7 +77,7 @@ export async function POST(req: Request) {
       };
     });
 
-    const nuevoCurso = {
+    const nuevoCurso: NuevoCurso = {
       nivel,
       curso,
       titulos: titulosFormateados,
@@ -53,7 +87,7 @@ export async function POST(req: Request) {
     client = new MongoClient(process.env.MONGODB_URI as string);
     await client.connect();
     const db = client.db(process.env.MONGODB_DB);
-    const collection = db.collection('Cursos');
+    const collection = db.collection<NuevoCurso>('Cursos');
 
     await collection.insertOne(nuevoCurso);
 
