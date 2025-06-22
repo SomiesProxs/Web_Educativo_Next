@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import CourseAccordion from '@/components/union/CourseAccordion';
 import ReadingContent from '@/components/union/ReadingContent';
 
@@ -18,6 +19,11 @@ interface SubtemaData {
   curso: string;
   titulo: string;
   subtema: string;
+}
+
+interface SessionUser {
+  _id: string;
+  theme?: 0 | 1;
 }
 
 export default function CoursePage() {
@@ -115,7 +121,7 @@ export default function CoursePage() {
       }
 
       // Sino, intentar obtenerlo desde la API
-      const userId = (sessionUser as any)._id;
+      const userId = (sessionUser as SessionUser)._id;
       try {
         const res = await fetch(`/api/users/${userId}`);
         
@@ -265,12 +271,12 @@ export default function CoursePage() {
       <h1 className="text-2xl lg:text-3xl font-extrabold mb-3 tracking-wide break-words leading-tight flex flex-wrap items-center gap-2">
         <span>Curso:</span>
         {cursoData?.curso ? (
-          <a
+          <Link
             href={`/Niveles/${encodeURIComponent(cursoData.nivel)}`}
             className="hover:underline break-words"
           >
             {cursoData.curso}
-          </a>
+          </Link>
         ) : (
           <span className="text-gray-500">Curso no encontrado</span>
         )}
@@ -280,21 +286,21 @@ export default function CoursePage() {
       {cursoData?.nivel && (
         <p className="text-sm font-medium uppercase tracking-widest mb-4">
           Nivel:{' '}
-          <a
+          <Link
             href="/"
             className="hover:underline"
           >
             {cursoData.nivel}
-          </a>
+          </Link>
         </p>
       )}
 
       {/* Botón Comprar Estrellas */}
-      <a
+      <Link
         href="/Pagar"
-        className={`inline-blockfont-bold py-2 px-4 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg ${localTheme === 1 ? 'bg-[#030712]' : 'bg-[#BEE1E5]'}`}>
+        className={`inline-block font-bold py-2 px-4 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg ${localTheme === 1 ? 'bg-[#030712]' : 'bg-[#BEE1E5]'}`}>
       Comprar Somicoins
-      </a>
+      </Link>
     </div>
 
     

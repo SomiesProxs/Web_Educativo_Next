@@ -10,6 +10,11 @@ interface Curso {
   titulo: string;
 }
 
+interface SessionUser {
+  _id: string;
+  theme?: 0 | 1;
+}
+
 interface NivelPageProps {
   params: Promise<{
     nivel: string;
@@ -52,7 +57,7 @@ export default function NivelPage({ params }: NivelPageProps) {
         return;
       }
 
-      const userId = (sessionUser as any)._id;
+      const userId = (sessionUser as SessionUser)._id;
       if (!userId) {
         setLocalTheme(0); // fallback por si no hay _id
         return;
