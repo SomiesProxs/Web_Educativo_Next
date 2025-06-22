@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 
 type Subtema = {
   nombre: string;
@@ -62,8 +63,8 @@ export default function CI1() {
     });
   };
 
-  // Función para cargar imágenes del subtema actual
-  const cargarImagenesSubtema = async () => {
+  // Función para cargar imágenes del subtema actual usando useCallback para evitar dependencias
+  const cargarImagenesSubtema = useCallback(async () => {
     if (!selectedNivel || !selectedCurso || !selectedTitulo || !selectedSubtema) {
       setImagenes([]);
       return;
@@ -87,7 +88,7 @@ export default function CI1() {
       console.error('Error cargando imágenes del subtema:', error);
       setImagenes([]);
     }
-  };
+  }, [selectedNivel, selectedCurso, selectedTitulo, selectedSubtema]);
 
   // Cargar los niveles al inicio
   useEffect(() => {
@@ -197,7 +198,7 @@ export default function CI1() {
   // Cuando cambia el subtema, cargar sus imágenes
   useEffect(() => {
     cargarImagenesSubtema();
-  }, [selectedSubtema]);
+  }, [cargarImagenesSubtema]);
 
   // Función para manejar la selección de archivos
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>, isReplacement = false) => {
@@ -514,7 +515,7 @@ export default function CI1() {
       {/* Sección para ver imágenes */}
       {imagenes.length > 0 && selectedSubtema && (
         <div className="p-4 mt-6 border rounded bg-gray-100">
-          <h2 className="font-bold text-lg mb-4">Imágenes del Subtema "{selectedSubtema}":</h2>
+          <h2 className="font-bold text-lg mb-4">Imágenes del Subtema &ldquo;{selectedSubtema}&rdquo;:</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Lista de imágenes */}
@@ -611,10 +612,13 @@ export default function CI1() {
                   </div>
                   
                   <div className="border rounded p-2 bg-white">
-                    <img
+                    <Image
                       src={imagenes[selectedImageIndex].url}
                       alt={imagenes[selectedImageIndex].name}
+                      width={400}
+                      height={300}
                       className="w-full h-auto max-h-96 object-contain rounded"
+                      unoptimized
                     />
 
                     <div className="mt-2 text-sm text-gray-600 space-y-1">
@@ -653,7 +657,7 @@ export default function CI1() {
         <div className="p-4 mt-6 border rounded bg-yellow-50">
           <h3 className="font-semibold text-yellow-800 mb-2">Sin imágenes</h3>
           <p className="text-yellow-700">
-            El subtema "{selectedSubtema}" no tiene imágenes aún. Usa el botón "Insertar primera imagen" para agregar una.
+            El subtema &ldquo;{selectedSubtema}&rdquo; no tiene imágenes aún. Usa el botón &ldquo;Insertar primera imagen&rdquo; para agregar una.
           </p>
         </div>
       )}
