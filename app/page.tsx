@@ -1,5 +1,21 @@
 'use client';
 
+// 🔥 DECLARACIÓN DE TIPOS PARA SPLINE-VIEWER
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'spline-viewer': {
+        url?: string;
+        className?: string;
+        style?: React.CSSProperties;
+        loading?: 'lazy' | 'eager';
+        'events-target'?: string;
+        [key: string]: any;
+      };
+    }
+  }
+}
+
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -111,7 +127,11 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
    };
  //spline
  useEffect(() => {
-    import('@splinetool/viewer');
+    // Solo importar en el cliente
+    if (typeof window !== 'undefined') {
+      import('@splinetool/viewer').catch(console.error);
+    }
+    
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
