@@ -30,7 +30,7 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const setDarkMode = useState(false)[1];
+  // Eliminada la línea problemática: const setDarkMode = useState(false)[1];
 
   const { data: session, update } = useSession();
   const sessionUser = session?.user; 
@@ -154,7 +154,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (localTheme !== null) {
       const isDark = localTheme === 1;
-      setDarkMode(isDark);
+      // Eliminada la llamada a setDarkMode(isDark);
       if (isDark) {
         document.documentElement.classList.add("dark");
       } else {
