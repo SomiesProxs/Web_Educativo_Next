@@ -1,21 +1,5 @@
 'use client';
 
-// 🔥 DECLARACIÓN DE TIPOS PARA SPLINE-VIEWER
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'spline-viewer': {
-        url?: string;
-        className?: string;
-        style?: React.CSSProperties;
-        loading?: 'lazy' | 'eager';
-        'events-target'?: string;
-        [key: string]: any;
-      };
-    }
-  }
-}
-
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -127,11 +111,7 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
    };
  //spline
  useEffect(() => {
-    // Solo importar en el cliente
-    if (typeof window !== 'undefined') {
-      import('@splinetool/viewer').catch(console.error);
-    }
-    
+    import('@splinetool/viewer');
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -264,50 +244,50 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
 
 
     <main className="cuerpoportada">
-  <section className="sub1cuerpoportada relative w-full overflow-hidden bg-black">
-    {/* Fondo: Spline o imagen móvil */}
-    {isMobile ? (
-      <Image
-        src="https://cdn.pixabay.com/photo/2017/01/31/13/14/robot-2027195_1280.png"
-        alt="Robot futurista - Imagen de fondo"
-        fill
-        className="object-cover pointer-events-none z-0"
-        priority
-        sizes="100vw"
-      />
-    ) : (
-      <>
-        <spline-viewer
-          url="https://prod.spline.design/fNAfkERP-hlFefcl/scene.splinecode"
-          className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
-          loading="eager"
-        />
-        {/* Parche para cubrir figura circular en esquina inferior derecha */}
-        <div 
-          className="absolute bottom-0 right-0 w-40 h-40 bg-black z-10"
-          aria-hidden="true"
-        />
-      </>
-    )}
+      <section className="sub1cuerpoportada relative w-full overflow-hidden bg-black">
+        {/* Fondo: Spline o imagen móvil */}
+{isMobile ? (
+  <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+    <video
+      src="/robotcelular.mp4"
+      autoPlay
+      loop
+      muted
+      playsInline
+      className="w-full h-full object-cover"
+    />
+  </div>
+) : (
+  <>
+    <video
+      src="/robotportada.mp4"
+      autoPlay
+      loop
+      muted
+      playsInline
+      className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none z-0"
+    />
+    {/* Parche para cubrir figura circular en esquina inferior derecha */}
+    <div className="absolute bottom-0 right-0 w-40 h-40 bg-black z-10"></div>
+  </>
+)}
 
-    {/* Contenido encima del fondo */}
-    <section className="espaciosub1cuerpoportada relative z-20" />
-    <section className="cuadro1sub1cuerpoportada relative z-20 text-white text-center">
-      <h1 className="text-3xl md:text-4xl font-bold mb-4">
-        ¡Desbloquea tu futuro ahora!
-      </h1>
-      <div className="text-lg md:text-xl space-y-2">
-        <p className="mb-4">Explora recursos y herramientas para ti:</p>
-        <ul className="list-none space-y-1">
-          <li>✔ Aprende lo básico hasta lo avanzado.</li>
-          <li>✔ Mejora tus habilidades a tu ritmo.</li>
-          <li>✔ Construye el camino hacia tus metas.</li>
-        </ul>
-        <p className="mt-4 text-xl">📲 ¡Empieza a crecer hoy!</p>
-      </div>
-    </section>
-  </section>
-</main>
+
+
+        {/* Contenido encima del fondo */}
+        <section className="espaciosub1cuerpoportada relative z-20"></section>
+        <section className="cuadro1sub1cuerpoportada relative z-20 text-white text-center">
+          <h1>¡Desbloquea tu futuro ahora!</h1>
+          <p>
+            Explora recursos y herramientas para ti: <br />
+            ✔ Aprende lo básico hasta lo avanzado. <br />
+            ✔ Mejora tus habilidades a tu ritmo. <br />
+            ✔ Construye el camino hacia tus metas. <br />
+            📲 ¡Empieza a crecer hoy!
+          </p>
+        </section>
+      </section>
+    </main>
 
         
              <footer>
