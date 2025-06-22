@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
+const WORD = ['S', 'O', 'M', 'I', 'E', 'S']; // ✅ Moved outside component
+
 export default function Hero({ onAnimationComplete }: { onAnimationComplete: () => void }) {
-  const word = ['S', 'O', 'M', 'I', 'E', 'S']; // ✅ Solo lo defines una vez
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -13,7 +14,7 @@ export default function Hero({ onAnimationComplete }: { onAnimationComplete: () 
       setIsLoading(false);
 
       // Animar cada letra una a una
-      word.forEach((_, index) => {
+      WORD.forEach((_, index) => {
         const el = containerRef.current?.children[index];
         if (el) {
           setTimeout(() => {
@@ -39,9 +40,9 @@ export default function Hero({ onAnimationComplete }: { onAnimationComplete: () 
             },
           });
         }
-      }, word.length * 600 + 1000);
+      }, WORD.length * 600 + 1000);
     }, 100);
-  }, [onAnimationComplete, word]);
+  }, [onAnimationComplete]);
 
   if (isLoading) {
     return (
@@ -57,8 +58,8 @@ export default function Hero({ onAnimationComplete }: { onAnimationComplete: () 
         ref={containerRef}
         className="text-[80px] font-black leading-none tracking-tight flex gap-1 text-white uppercase lg:text-[180px]"
       >
-        {word.map((letter, index) => (
-          <span key={index} className="inline-block opacity-0">{letter}</span> // ⬅️ Están ocultas al inicio
+        {WORD.map((letter, index) => (
+          <span key={index} className="inline-block opacity-0">{letter}</span>
         ))}
       </div>
     </div>

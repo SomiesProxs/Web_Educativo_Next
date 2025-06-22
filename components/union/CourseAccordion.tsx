@@ -44,6 +44,13 @@ interface ModalProps {
   isDark?: boolean;
 }
 
+// Interface for API response item
+interface ApiResponseItem {
+  titulo?: string;
+  estado?: number;
+  subtemas?: Subtema[];
+}
+
 function Modal({ isOpen, onClose, title, children, isDark = false }: ModalProps) {
   if (!isOpen) return null;
 
@@ -153,7 +160,7 @@ export default function CourseAccordion({
       try {
         const response = await fetch(`/api/informacion?nivel=${cursoData.nivel}&curso=${cursoData.curso}`);
         
-        const data = await response.json();
+        const data: ApiResponseItem[] | ApiResponseItem = await response.json();
         console.log('Datos recibidos de la API:', data);
         console.log('Tipo de data:', typeof data, 'Es array:', Array.isArray(data));
         
@@ -181,7 +188,7 @@ export default function CourseAccordion({
         // La API devuelve un array de títulos separados, necesitamos agruparlos
         const titulosAgrupados: { [key: string]: Titulo } = {};
         
-        data.forEach((item: any) => {
+        data.forEach((item: ApiResponseItem) => {
           const tituloKey = item.titulo || 'Título sin nombre';
           if (!titulosAgrupados[tituloKey]) {
             titulosAgrupados[tituloKey] = {
@@ -712,7 +719,7 @@ export default function CourseAccordion({
       >
         <div className="space-y-4">
           <p className={styles.modalText}>
-            ¿Deseas desbloquear "{modalState.titulo?.titulo}" por 5 estrellas?
+            ¿Deseas desbloquear &quot;{modalState.titulo?.titulo}&quot; por 5 estrellas?
           </p>
           
           <div className="flex space-x-3">
