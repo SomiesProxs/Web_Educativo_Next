@@ -171,14 +171,14 @@ export default function CourseAccordion({
             console.log('Intentando procesar objeto como array unitario');
             setTitulos([{
               titulo: data.titulo || 'Título sin nombre',
-              estado: data.estado || 0,
+              estado: data.estado || 1,
               subtemas: data.subtemas || []
             }]);
           } else {
             console.log('Creando título por defecto');
             setTitulos([{
               titulo: 'Sin contenido disponible',
-              estado: 0,
+              estado: 1,
               subtemas: []
             }]);
           }
@@ -193,7 +193,7 @@ export default function CourseAccordion({
           if (!titulosAgrupados[tituloKey]) {
             titulosAgrupados[tituloKey] = {
               titulo: tituloKey,
-              estado: item.estado !== undefined ? item.estado : 0,
+              estado: item.estado !== undefined ? item.estado : 1,
               subtemas: Array.isArray(item.subtemas) ? item.subtemas : []
             };
           }
@@ -206,7 +206,7 @@ export default function CourseAccordion({
           console.log('No hay títulos, creando título por defecto');
           setTitulos([{
             titulo: 'Sin títulos disponibles',
-            estado: 0,
+            estado: 1,
             subtemas: []
           }]);
         } else {
@@ -216,7 +216,7 @@ export default function CourseAccordion({
         console.error('Error al obtener títulos:', error);
         setTitulos([{
           titulo: 'Error al cargar contenido',
-          estado: 0,
+          estado: 1,
           subtemas: []
         }]);
       } finally {
@@ -245,7 +245,7 @@ export default function CourseAccordion({
       const purchased: { [key: string]: boolean } = {};
       
       for (const titulo of titulos) {
-        if (titulo.estado === 1) {
+        if (titulo.estado === 0) {
           try {
             const response = await fetch(
               `/api/check-course-access?userId=${session.user.id}&nivel=${cursoData.nivel}&curso=${cursoData.curso}&titulo=${titulo.titulo}`
@@ -275,7 +275,7 @@ export default function CourseAccordion({
     
     // Si no hay sesión cargada aún, permitir acceso a contenido público
     if (status === 'loading') {
-      return titulo.estado === 0 ? { canAccess: true } : { canAccess: false, reason: 'loading' };
+      return titulo.estado === 1 ? { canAccess: true } : { canAccess: false, reason: 'loading' };
     }
     
     // Admin puede acceder a todo
@@ -285,13 +285,13 @@ export default function CourseAccordion({
     }
     
     // Título con estado 0 (desbloqueado por defecto) - todos pueden acceder
-    if (titulo.estado === 0) {
+    if (titulo.estado === 1) {
       console.log('✅ Public content access granted');
       return { canAccess: true };
     }
     
     // Título con estado 1 (bloqueado por defecto) - requiere compra con estrellas
-    if (titulo.estado === 1) {
+    if (titulo.estado === 0) {
       // Usuario sin register - necesita register
       if (!session || !session.user) {
         console.log('❌ Need register for premium content');
@@ -623,13 +623,13 @@ export default function CourseAccordion({
                     <span className="text-lg">{getAccessIcon(titulo)}</span>
                     
                     <span className={`text-xs px-2 py-1 rounded ${
-                      titulo.estado === 0
+                      titulo.estado === 1
                         ? ''
                         : access.canAccess
                         ? ''
                         : 'bg-[#891616] text-white'
                     }`}>
-                      {titulo.estado === 0 
+                      {titulo.estado === 1 
                         ? '' 
                         : access.canAccess 
                         ? '' 
@@ -689,7 +689,7 @@ export default function CourseAccordion({
         <div className="space-y-4">
           <p className={styles.modalText}>
             Necesitas 5 estrellas para desbloquear este curso. 
-            Actualmente tienes {modalState.userStars} estrellas.
+            Actualmente tienes {modalState.userStars} somicoins.
           </p>
           
           <div className="flex flex-col space-y-3">
@@ -720,6 +720,7 @@ export default function CourseAccordion({
         <div className="space-y-4">
           <p className={styles.modalText}>
             ¿Deseas desbloquear &quot;{modalState.titulo?.titulo}&quot; por 5 estrellas?
+            Actualmente tienes {modalState.userStars} somicoins
           </p>
           
           <div className="flex space-x-3">

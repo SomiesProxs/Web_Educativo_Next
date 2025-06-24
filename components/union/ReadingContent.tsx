@@ -62,10 +62,10 @@ export default function ReadingContent({ selectedSubtema, localTheme = 0 }: Read
 
   if (!selectedSubtema) {
     return (
-      <div className={`prose dark:prose-invert max-w-none ${getContainerStyles()} p-6 rounded-lg`}>
-        <div className={`${getWelcomeStyles()} p-8 rounded-lg border-2 shadow-lg`}>
-          <h1 className="text-3xl font-bold mb-4">Bienvenido al Curso</h1>
-          <p className="text-lg mb-6">
+      <div className={`${getContainerStyles()} min-h-screen p-2 sm:p-6`}>
+        <div className={`${getWelcomeStyles()} p-4 sm:p-8 rounded-lg border-2 shadow-lg`}>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-4">Bienvenido al Curso</h1>
+          <p className="text-base sm:text-lg mb-6">
             Selecciona un subtema del panel izquierdo para comenzar a estudiar.
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function ReadingContent({ selectedSubtema, localTheme = 0 }: Read
 
   if (loading) {
     return (
-      <div className={`${getContainerStyles()} p-6`}>
+      <div className={`${getContainerStyles()} min-h-screen p-2 sm:p-6`}>
         <div className="flex flex-col items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
           <p className="text-lg">Cargando contenido del subtema...</p>
@@ -86,7 +86,7 @@ export default function ReadingContent({ selectedSubtema, localTheme = 0 }: Read
 
   if (error) {
     return (
-      <div className={`${getContainerStyles()} p-6`}>
+      <div className={`${getContainerStyles()} min-h-screen p-2 sm:p-6`}>
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           <h3 className="font-bold">Error al cargar el contenido</h3>
           <p>{error}</p>
@@ -96,26 +96,22 @@ export default function ReadingContent({ selectedSubtema, localTheme = 0 }: Read
   }
 
   return (
-<div className={`${getContainerStyles()} p-6`}>
-  <div
-    className={`
-      prose dark:prose-invert max-w-none
-      bg-white
-      p-[30px]
-      rounded-[15px]
-      shadow-[0_5px_15px_rgba(0,0,0,0.1)]
-      font-[Segoe_UI,_Tahoma,_Geneva,_Verdana,_sans-serif]
-      text-[#333]
-      text-[16px]
-      leading-[1.6]
-      relative
-      max-w-full
-      mb-[30px]
-    `}
-    dangerouslySetInnerHTML={{ __html: contenido }}
-  />
-</div>
-
-);
-
+    <div className={`${getContainerStyles()} min-h-screen w-full`}>
+      <div
+        className={`
+          prose dark:prose-invert max-w-none
+          bg-white
+          p-4 sm:p-6 md:p-8
+          sm:rounded-lg sm:shadow-[0_5px_15px_rgba(0,0,0,0.1)]
+          font-[Segoe_UI,_Tahoma,_Geneva,_Verdana,_sans-serif]
+          text-[#333]
+          text-sm sm:text-base
+          leading-relaxed
+          w-full
+          sm:m-2 md:m-4
+        `}
+        dangerouslySetInnerHTML={{ __html: contenido }}
+      />
+    </div>
+  );
 }

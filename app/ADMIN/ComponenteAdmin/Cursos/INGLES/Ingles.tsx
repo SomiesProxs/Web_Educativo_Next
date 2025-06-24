@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 
-interface MAISENAMaisenaProps {
+interface INGLESInglesProps {
   onVolver: () => void;
 }
 
-export default function MAISENAMaisena({ onVolver }: MAISENAMaisenaProps) {
+export default function INGLESIngles({ onVolver }: INGLESInglesProps) {
   const [curso, setCurso] = useState('');
   const [titulos, setTitulos] = useState([{ titulo: '', estado: 1, subtemas: [''] }]);
   const [mensaje, setMensaje] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export default function MAISENAMaisena({ onVolver }: MAISENAMaisenaProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nivel: 'MAISENA',
+          nivel: 'INGLES',
           curso,
           titulos,
         }),
@@ -85,7 +85,7 @@ export default function MAISENAMaisena({ onVolver }: MAISENAMaisenaProps) {
         ⬅ Volver
       </button>
 
-      <h2 className="text-3xl font-bold mb-6">TEMAS Y SUBTEMAS DE MAISENA</h2>
+      <h2 className="text-3xl font-bold mb-6">TEMAS Y SUBTEMAS DE INGLES</h2>
 
       <div className="bg-white shadow-md rounded-lg p-6 flex flex-col gap-6">
         <div>

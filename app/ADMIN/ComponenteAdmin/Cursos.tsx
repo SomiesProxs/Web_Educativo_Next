@@ -2,11 +2,7 @@
 
 import { useState } from 'react';
 import { gsap } from 'gsap';
-import Inicial from './Cursos/INICIAL/Inicial';
-import Misael from './Cursos/MISAEL/Misael';
-import Huevo from './Cursos/HUEVO/Huevo';
-import Maisena from './Cursos/MAISENA/Maisena';
-import Carpinteria from './Cursos/CARPINTERIA/Carpinteria';
+import Ingles from './Cursos/INGLES/Ingles';
 import A1 from './A1';
 
 export default function Cursos() {
@@ -19,31 +15,13 @@ const [showButtons, setShowButtons] = useState(true);
 
 //aca solo aumentar nuevos cursos y arribaa tambien en los imports nada mas xd
 const cursos = [
+  
   {
-    nombre: 'INICIAL',
-    componente: Inicial,
-    claseAnimacion: 'inicial-container',
+    nombre: 'INGLES',
+    componente: Ingles,
+    claseAnimacion: 'Ingles-container',
   },
-  {
-    nombre: 'MISAEL',
-    componente: Misael,
-    claseAnimacion: 'Misael-container',
-  },
-  {
-    nombre: 'HUEVO',
-    componente: Huevo,
-    claseAnimacion: 'Huevo-container',
-  },
-  {
-    nombre: 'MAISENA',
-    componente: Maisena,
-    claseAnimacion: 'Maisena-container',
-  },
-  {
-    nombre: 'CARPINTERIA',
-    componente: Carpinteria,
-    claseAnimacion: 'Carpinteria-container',
-  },
+  
 ];
 
 

@@ -92,7 +92,7 @@ export const authOptions: NextAuthOptions = {
             token.phone = userData.phone || 0;
             token.birthDate = userData.birthDate || "";
             token.gender = userData.gender || "";
-            token.stars = userData.stars || 20;
+            token.stars = userData.stars ?? 20;
             token.theme = userData.theme || 0;
           }
         }

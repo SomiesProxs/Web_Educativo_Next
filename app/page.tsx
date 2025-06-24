@@ -30,7 +30,10 @@ const Bienvenida = () => {
    const [isMobile, setIsMobile] = useState(false);
 const [niveles, setNiveles] = useState<Nivel[]>([]);
   const [menuVisible, setMenuVisible] = useState(false);
-
+  
+  const closeMenu = () => {
+    setMenuVisible(false);
+  };
   useEffect(() => {
     const fetchNiveles = async () => {
       try {
@@ -220,23 +223,32 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
         
 
                  <section className="sub1cabeza2portada">
-                    {/* Botón de hamburguesa */}
-                    <div className="hamburguesaportada" onClick={toggleMenu}>
-                      &#9776;
-                    </div>
+        {/* Botón de hamburguesa */}
+        <div className="hamburguesaportada" onClick={toggleMenu}>
+          &#9776;
+        </div>
 
-                    {/* Menú desplegable */}
-                    <div className={`menusub1cabeza2portada ${menuVisible ? 'visible' : ''}`}>
-                      {niveles.map((nivel) => (
-                        <a
-                          key={nivel.nombre}
-                          href={`/Niveles/${nivel.nombre.toLowerCase().replace(/\s+/g, '')}`}
-                        >
-                          {nivel.nombre}
-                        </a>
-                      ))}
-                    </div>
-                  </section>
+        {/* Overlay para cerrar el menú al hacer clic fuera */}
+        {menuVisible && (
+          <div 
+            className={`menu-overlay ${menuVisible ? 'visible' : ''}`}
+            onClick={closeMenu}
+          />
+        )}
+
+        {/* Menú desplegable */}
+        <div className={`menusub1cabeza2portada modern ${menuVisible ? 'visible' : ''}`}>
+          {niveles.map((nivel) => (
+            <a
+              key={nivel.nombre}
+              href={`/Niveles/${nivel.nombre.toLowerCase().replace(/\s+/g, '')}`}
+              onClick={closeMenu} // Cerrar menú al hacer clic en un enlace
+            >
+              {nivel.nombre}
+            </a>
+          ))}
+        </div>
+      </section>
                   
              </nav>
         
