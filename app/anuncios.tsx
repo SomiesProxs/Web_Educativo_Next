@@ -20,7 +20,7 @@ export default function Anuncios() {
     <div>
       <h2 className="text-2xl font-bold mb-4">Anuncios de prueba</h2>
 
-      {/* Anuncio responsivo */}
+      {/* Anuncio responsivos */}
       <ins
         className="adsbygoogle block text-center"
         data-ad-client="ca-pub-2700415692306726"
