@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { 
           success: false, 
-          message: `Estrellas insuficientes. Tienes ${currentStars} estrellas y necesitas ${cost}`,
+          message: `Estrellas insuficientes. Tienes ${currentStars} somicoins y necesitas ${cost}`,
           currentStars // Enviar las estrellas actuales para actualizar el frontend
         },
         { status: 400 }
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         );
         
         if (updateResult.matchedCount === 0) {
-          throw new Error('No se pudo actualizar las estrellas del usuario');
+          throw new Error('No se pudo actualizar los somicoins del usuario');
         }
 
         // Registrar la compra

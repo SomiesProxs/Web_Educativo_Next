@@ -104,7 +104,9 @@ export default function NivelPage({ params }: NivelPageProps) {
         localTheme === 1 ? 'bg-[#202c44] text-white' : 'bg-[#d5e9ea] text-gray-900'
       }`}
     >
-      <h1 className="text-4xl font-bold mb-8">Cursos de {nivel}</h1>
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 sm:mb-8 text-center sm:text-left leading-tight">
+        Cursos de {nivel}
+      </h1>
 
       {cursos.length === 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-300">No hay cursos disponibles.</p>

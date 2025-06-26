@@ -307,7 +307,7 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
                  <section className="sub1pieportada">
                    {/* Información general */}
                    <div className="infoportada">
-                     <h3>Sobre Nosotros</h3>
+                     <h3 className="font-bold text-[#A0753A]">Sobre Nosotros</h3>
                      <p>
                        Enseñamos cursos gratuitos para inicial, primaria, secundaria, inglés y programación (frontend-backend).
                      </p>
@@ -316,35 +316,28 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
                        {/* Enlaces rápidos */}
                        <div className='informacionportada'>
                          <div className="enlacesportada">
-                           <h3>Categorías</h3>
+                           <h3 className="font-bold text-[#A0753A]">Categorías</h3>
                            <ul>
-                             <li><a href="#inicial">Inicial</a></li>
-                             <li><a href="#primaria">Primaria</a></li>
-                             <li><a href="#secundaria">Secundaria</a></li>
-                             <li><a href="#ingles">Inglés</a></li>
-                             <li><a href="#programacion">Programación</a></li>
+                             
+                             <li>{niveles.map((nivel) => (
+            <a
+              key={nivel.nombre}
+              href={`/Niveles/${nivel.nombre.toLowerCase().replace(/\s+/g, '')}`}
+              onClick={closeMenu} // Cerrar menú al hacer clic en un enlace
+            >
+              {nivel.nombre}
+            </a>
+          ))}</li>
                            </ul>
                          </div>
         
                          {/* Redes sociales */}
                          <div className="redesportada">
-                           <h3>Síguenos</h3>
+                           <h3 className="font-bold text-[#A0753A]">Conecta conmigo</h3>
                            <div className="iconsportada">
-                           <a href="#" title="Facebook" aria-label="Facebook">
-          <Image src="/facebook.png" alt="Facebook" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="Twitter" aria-label="Twitter">
-          <Image src="/twiter.png" alt="Twitter" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="Instagram" aria-label="Instagram">
-          <Image src="/instagram.png" alt="Instagram" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="WhatsApp" aria-label="WhatsApp">
-          <Image src="/wasap.png" alt="WhatsApp" width={24} height={24} />
-        </a>
+                           <a href="https://portafolio-web-bay-iota.vercel.app/" title="github" aria-label="github">
+                            <Image src="/facebook.png" alt="github" width={24} height={24} />
+                          </a>
         
                            </div>
                          </div>
@@ -356,35 +349,28 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
                      </span>
                    </div>
                    <div className="enlacesportada">
-                     <h3>Categorías</h3>
+                     <h3 className="font-bold text-[#A0753A]">Categorías</h3>
                      <ul>
-                       <li><a href="#inicial">Inicial</a></li>
-                       <li><a href="#primaria">Primaria</a></li>
-                       <li><a href="#secundaria">Secundaria</a></li>
-                       <li><a href="#ingles">Inglés</a></li>
-                       <li><a href="#programacion">Programación</a></li>
+                       <li>{niveles.map((nivel) => (
+                        <a
+                          key={nivel.nombre}
+                          href={`/Niveles/${nivel.nombre.toLowerCase().replace(/\s+/g, '')}`}
+                          onClick={closeMenu} // Cerrar menú al hacer clic en un enlace
+                        >
+                          {nivel.nombre}
+                        </a>
+                      ))}
+                      </li>
                      </ul>
                    </div>
         
                    {/* Redes sociales */}
                    <div className="redesportada">
-                     <h3>Síguenos</h3>
+                     <h3 className="font-bold text-[#A0753A]">Conecta conmigo</h3>
                      <div className="iconsportada">
-                     <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook">
-          <Image src="/facebook.png" alt="Facebook" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="Twitter" aria-label="Twitter">
-          <Image src="/twiter.png" alt="Twitter" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="Instagram" aria-label="Instagram">
-          <Image src="/instagram.png" alt="Instagram" width={24} height={24} />
-        </a>
-        
-        <a href="#" title="WhatsApp" aria-label="WhatsApp">
-          <Image src="/wasap.png" alt="WhatsApp" width={24} height={24} />
-        </a>
+                     <a href="https://portafolio-web-bay-iota.vercel.app/" target="_blank" rel="noopener noreferrer" title="github">
+                      <Image src="/facebook.png" alt="github" width={24} height={24} />
+                    </a>
         
                      </div>
                    </div>
