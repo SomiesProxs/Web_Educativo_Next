@@ -335,7 +335,7 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
                          <div className="redesportada">
                            <h3 className="font-bold text-[#A0753A]">Conecta conmigo</h3>
                            <div className="iconsportada">
-                           <a href="https://portafolio-web-bay-iota.vercel.app/" title="github" aria-label="github">
+                           <a href="https://portafolio-web-delta-five.vercel.app/" title="github" aria-label="github">
                             <Image src="/facebook.png" alt="github" width={24} height={24} />
                           </a>
         
@@ -368,7 +368,7 @@ const [niveles, setNiveles] = useState<Nivel[]>([]);
                    <div className="redesportada">
                      <h3 className="font-bold text-[#A0753A]">Conecta conmigo</h3>
                      <div className="iconsportada">
-                     <a href="https://portafolio-web-bay-iota.vercel.app/" target="_blank" rel="noopener noreferrer" title="github">
+                     <a href="https://portafolio-web-delta-five.vercel.app/" target="_blank" rel="noopener noreferrer" title="github">
                       <Image src="/facebook.png" alt="github" width={24} height={24} />
                     </a>
         

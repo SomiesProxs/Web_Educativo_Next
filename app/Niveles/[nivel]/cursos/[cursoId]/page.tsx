@@ -5,8 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import CourseAccordion from '@/components/union/CourseAccordion';
-import ReadingContent from '@/components/union/ReadingContent';
-
+import {ReadingContent} from '@/components/union/ReadingContent'
 interface Curso {
   _id: string;
   curso: string;

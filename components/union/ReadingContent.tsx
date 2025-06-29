@@ -14,7 +14,7 @@ interface ReadingContentProps {
   localTheme?: 0 | 1 | null;
 }
 
-export default function ReadingContent({ selectedSubtema, localTheme = 0 }: ReadingContentProps) {
+export function ReadingContent({ selectedSubtema, localTheme = 0 }: ReadingContentProps) {
   const [contenido, setContenido] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
